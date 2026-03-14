@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>服务号内容数据分析报告</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --sub: #667085;
+      --line: #e5e7eb;
+      --brand: #0ea5a4;
+      --brand2: #2563eb;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --bad: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, #e0f2fe 0%, transparent 30%),
+        radial-gradient(circle at 85% 15%, #dcfce7 0%, transparent 25%),
+        var(--bg);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 24px auto 48px;
+      padding: 0 16px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0f172a, #1e3a8a 55%, #0f766e);
+      color: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #dbeafe;
+    }
+
+    .kpi-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .kpi .label { font-size: 13px; color: #bfdbfe; }
+    .kpi .value { font-size: 24px; margin-top: 6px; font-weight: 700; }
+
+    .section {
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .section h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 320px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 800px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .up { background: #dcfce7; color: #166534; }
+    .flat { background: #fef3c7; color: #92400e; }
+    .down { background: #fee2e2; color: #991b1b; }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .sample-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fcfcfd;
+    }
+
+    .sample-card h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .sample-card p {
+      margin: 4px 0;
+      color: var(--sub);
+      font-size: 13px;
+    }
+
+    .actions li { margin: 8px 0; }
+
+    @media (max-width: 980px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .sample-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>服务号内容数据分析报告（Mock）</h1>
+      <p>周期：2026-03-08 ~ 2026-03-14 | 生成时间：2026-03-14 22:30</p>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">总笔记数</div><div class="value">127</div></div>
+        <div class="kpi"><div class="label">总曝光</div><div class="value">812,400</div></div>
+        <div class="kpi"><div class="label">平均互动率</div><div class="value">8.7%</div></div>
+        <div class="kpi"><div class="label">高潜话题数</div><div class="value">4</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>1. 管理层摘要</h2>
+      <ul>
+        <li>发布量在周三至周五明显抬升，周五达到峰值 29 篇，较周均值高 34%。</li>
+        <li>“家电清洗”“收纳改造”两类话题贡献了 58% 的互动量，是当前增长主引擎。</li>
+        <li>高点击样本普遍具备“场景痛点+前后对比+步骤拆解”结构，建议沉淀统一模板。</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>2. 数据总览</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>发布数</th>
+              <th>曝光</th>
+              <th>点击</th>
+              <th>点赞</th>
+              <th>评论</th>
+              <th>收藏</th>
+              <th>互动率</th>
+              <th>趋势</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>03-08</td><td>12</td><td>91,200</td><td>8,980</td><td>1,240</td><td>220</td><td>710</td><td>7.9%</td><td><span class="badge flat">持平</span></td></tr>
+            <tr><td>03-09</td><td>15</td><td>102,800</td><td>10,420</td><td>1,510</td><td>260</td><td>820</td><td>8.4%</td><td><span class="badge up">上升</span></td></tr>
+            <tr><td>03-10</td><td>14</td><td>96,100</td><td>9,250</td><td>1,320</td><td>248</td><td>760</td><td>8.1%</td><td><span class="badge flat">持平</span></td></tr>
+            <tr><td>03-11</td><td>18</td><td>118,700</td><td>12,640</td><td>1,920</td><td>330</td><td>1,010</td><td>9.2%</td><td><span class="badge up">上升</span></td></tr>
+            <tr><td>03-12</td><td>20</td><td>125,900</td><td>13,150</td><td>2,040</td><td>356</td><td>1,120</td><td>9.0%</td><td><span class="badge flat">持平</span></td></tr>
+            <tr><td>03-13</td><td>19</td><td>121,300</td><td>12,090</td><td>1,860</td><td>318</td><td>1,040</td><td>8.6%</td><td><span class="badge down">回落</span></td></tr>
+            <tr><td>03-14</td><td>29</td><td>156,400</td><td>16,230</td><td>2,540</td><td>412</td><td>1,460</td><td>9.4%</td><td><span class="badge up">上升</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>3. 图表分析</h2>
+      <div class="grid-2">
+        <div>
+          <h3>图1：近7天发布量与曝光趋势</h3>
+          <div id="chartTrend" class="chart"></div>
+        </div>
+        <div>
+          <h3>图2：核心话题互动率对比</h3>
+          <div id="chartTopic" class="chart"></div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top: 14px;">
+        <div>
+          <h3>图3：标签贡献占比</h3>
+          <div id="chartTag" class="chart"></div>
+        </div>
+        <div>
+          <h3>图4：内容转化漏斗</h3>
+          <div id="chartFunnel" class="chart"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>4. 关键样本（Top 内容）</h2>
+      <div class="sample-grid">
+        <article class="sample-card">
+          <h4>样本A：家电清洗三步法</h4>
+          <p>曝光 28,500 | 点击率 12.4% | 收藏率 3.2%</p>
+          <p>亮点：痛点开场 + 前后对比 + 工具清单，收藏转化明显。</p>
+        </article>
+        <article class="sample-card">
+          <h4>样本B：小户型收纳改造</h4>
+          <p>曝光 24,100 | 点击率 11.7% | 评论率 0.9%</p>
+          <p>亮点：评论区问答活跃，适合衍生“预算档位”系列内容。</p>
+        </article>
+        <article class="sample-card">
+          <h4>样本C：服务故事访谈</h4>
+          <p>曝光 19,400 | 完读率 36.8% | 点赞率 2.6%</p>
+          <p>亮点：叙事完整，适合提升品牌好感和信任感。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>5. 行动建议</h2>
+      <ol class="actions">
+        <li>短期（1-2周）：将“家电清洗/收纳改造”增加至每周 4-5 篇，统一首屏模板和 CTA 话术。</li>
+        <li>中期（1个月）：建立标签策略包（场景/品类/痛点）并做 A/B 测试，跟踪互动率和收藏率变化。</li>
+        <li>长期（季度）：建设“作者分层激励”与“选题复盘机制”，形成可持续增长飞轮。</li>
+      </ol>
+    </section>
+  </main>
+
+  <script>
+    const x = ['03-08', '03-09', '03-10', '03-11', '03-12', '03-13', '03-14'];
+
+    const chartTrend = echarts.init(document.getElementById('chartTrend'));
+    chartTrend.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['发布量', '曝光'] },
+      xAxis: { type: 'category', data: x },
+      yAxis: [
+        { type: 'value', name: '发布量' },
+        { type: 'value', name: '曝光', splitLine: { show: false } }
+      ],
+      series: [
+        {
+          name: '发布量',
+          type: 'bar',
+          data: [12, 15, 14, 18, 20, 19, 29],
+          itemStyle: { color: '#0ea5a4' }
+        },
+        {
+          name: '曝光',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          data: [91200, 102800, 96100, 118700, 125900, 121300, 156400],
+          itemStyle: { color: '#2563eb' },
+          lineStyle: { width: 3 }
+        }
+      ]
+    });
+
+    const chartTopic = echarts.init(document.getElementById('chartTopic'));
+    chartTopic.setOption({
+      tooltip: { trigger: 'axis' },
+      xAxis: {
+        type: 'category',
+        data: ['家电清洗', '收纳改造', '保洁技巧', '服务故事', '清洁工具测评'],
+        axisLabel: { rotate: 20 }
+      },
+      yAxis: { type: 'value', axisLabel: { formatter: '{value}%' } },
+      series: [{
+        type: 'bar',
+        data: [11.2, 9.7, 8.6, 6.1, 7.4],
+        itemStyle: {
+          color: function(params) {
+            const colors = ['#14b8a6', '#22c55e', '#f59e0b', '#3b82f6', '#ef4444'];
+            return colors[params.dataIndex % colors.length];
+          }
+        },
+        label: { show: true, position: 'top', formatter: '{c}%' }
+      }]
+    });
+
+    const chartTag = echarts.init(document.getElementById('chartTag'));
+    chartTag.setOption({
+      tooltip: { trigger: 'item' },
+      legend: { bottom: 0 },
+      series: [{
+        type: 'pie',
+        radius: ['40%', '68%'],
+        data: [
+          { value: 34, name: '需求场景' },
+          { value: 21, name: '品牌信任' },
+          { value: 19, name: '产品卖点' },
+          { value: 17, name: '方法教程' },
+          { value: 9, name: '避坑提醒' }
+        ],
+        label: { formatter: '{b}: {d}%' }
+      }]
+    });
+
+    const chartFunnel = echarts.init(document.getElementById('chartFunnel'));
+    chartFunnel.setOption({
+      tooltip: { trigger: 'item' },
+      series: [{
+        type: 'funnel',
+        left: '15%',
+        top: 20,
+        bottom: 20,
+        width: '70%',
+        min: 0,
+        max: 100,
+        sort: 'descending',
+        gap: 2,
+        label: { show: true, position: 'inside' },
+        data: [
+          { value: 100, name: '曝光' },
+          { value: 13.4, name: '点击' },
+          { value: 2.8, name: '互动' },
+          { value: 1.1, name: '收藏' },
+          { value: 0.4, name: '转化咨询' }
+        ]
+      }]
+    });
+
+    window.addEventListener('resize', () => {
+      chartTrend.resize();
+      chartTopic.resize();
+      chartTag.resize();
+      chartFunnel.resize();
+    });
+  </script>
+</body>
+</html>
