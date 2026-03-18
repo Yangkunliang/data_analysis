@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容核心KPI日报（近31天，含当日）_2026-03-18</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --bg-0: #f6f9f4;
+      --bg-1: #eef4ff;
+      --ink: #0f172a;
+      --sub: #475569;
+      --panel: rgba(255, 255, 255, 0.88);
+      --line: #d7e1ef;
+      --signal-red: #dc2626;
+      --signal-orange: #ea580c;
+      --signal-green: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at -10% -20%, #c5f0d2 0%, transparent 55%),
+        radial-gradient(900px 500px at 95% 0%, #c7d7ff 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+      font-family: "DIN Alternate", "Avenir Next", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .wrap { max-width: 1240px; margin: 28px auto 36px; padding: 0 18px 24px; }
+    .reveal { opacity: 0; transform: translateY(12px); transition: all .5s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .hero {
+      border-radius: 18px;
+      padding: 22px;
+      background: linear-gradient(130deg, #0f172a 0%, #0b3a78 45%, #0b8f6f 100%);
+      color: #f8fafc;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      right: -80px;
+      top: -110px;
+      background: rgba(255, 255, 255, 0.14);
+      filter: blur(4px);
+    }
+    .hero-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: 1.2px; color: #d1fae5; text-transform: uppercase; }
+    .hero h1 { margin: 0; font-size: 34px; line-height: 1.2; }
+    .hero .meta { margin: 8px 0 0; color: #cde4ff; font-size: 13px; line-height: 1.6; }
+    .score {
+      min-width: 116px;
+      padding: 14px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.09);
+      text-align: center;
+      backdrop-filter: blur(3px);
+    }
+    .score .v { margin: 0; font-size: 38px; line-height: 1; font-weight: 700; color: #dc2626; text-shadow: 0 0 8px rgba(255, 255, 255, 0.15); }
+    .score .l { margin: 6px 0 0; font-size: 13px; color: #e2e8f0; }
+    .score .tag { margin: 4px 0 0; font-size: 11px; color: #bae6fd; }
+    .metric-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .metric .label { font-size: 12px; color: #dbeafe; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .metric .value { margin-top: 6px; font-size: 22px; font-weight: 700; color: #f8fafc; }
+    .signal-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .signal {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel);
+      backdrop-filter: blur(3px);
+    }
+    .signal .label { font-size: 12px; color: var(--sub); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .signal .value { margin-top: 6px; font-size: 22px; font-weight: 700; }
+    .signal .desc { margin-top: 4px; color: var(--sub); font-size: 13px; }
+    .help-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+    .help-btn {
+      border: 1px solid #94a3b8;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      padding: 0;
+      margin: 0;
+      font-size: 11px;
+      line-height: 14px;
+      text-align: center;
+      color: #0f172a;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+    .metric .help-btn,
+    .score .help-btn {
+      border-color: rgba(191, 219, 254, 0.55);
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .help-pop {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 8px);
+      min-width: 220px;
+      max-width: 360px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 12px;
+      line-height: 1.45;
+      box-shadow: 0 10px 22px rgba(2, 6, 23, 0.35);
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      z-index: 20;
+    }
+    .help-wrap:hover .help-pop,
+    .help-wrap:focus-within .help-pop,
+    .help-wrap.open .help-pop {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .help-wrap.help-up-right .help-pop {
+      left: auto;
+      right: 0;
+      top: auto;
+      bottom: calc(100% + 8px);
+    }
+    .help-wrap.help-down-left .help-pop {
+      left: 0;
+      right: auto;
+      top: calc(100% + 8px);
+      bottom: auto;
+    }
+    .card {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      padding: 16px;
+      backdrop-filter: blur(3px);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 22px; }
+    .summary-pill {
+      padding: 10px 12px;
+      border-left: 4px solid #0ea5e9;
+      background: #ecfeff;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .summary-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 12px; }
+    .summary-box {
+      border: 1px dashed #b6cadf;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .summary-box h3 { margin: 0 0 8px; font-size: 16px; }
+    .summary-kv {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #c7ddf5;
+      background: linear-gradient(120deg, rgba(239, 246, 255, 0.9), rgba(236, 253, 245, 0.85));
+    }
+    .summary-kv-label {
+      font-size: 12px;
+      color: #475569;
+      margin: 0 0 6px;
+      font-weight: 600;
+      letter-spacing: .4px;
+    }
+    .summary-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .summary-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid #99f6e4;
+      background: #ecfeff;
+      color: #0f766e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .summary-chip-empty {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .summary-rich {
+      margin: 0 0 10px;
+      line-height: 1.8;
+      color: #0f172a;
+      font-size: 14px;
+    }
+    .summary-rich .token {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 1px 6px;
+      margin: 0 1px;
+      font-weight: 700;
+    }
+    .summary-rich .token-num { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .summary-rich .token-up { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .summary-rich .token-down { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .summary-rich .token-warn { background: #ffedd5; color: #9a3412; border: 1px solid #fdba74; }
+    .summary-rich .token-action { background: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 6px; line-height: 1.55; }
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .chart { height: 330px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, 0.75); }
+    .wide { margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid #dbe5f2; padding: 9px 10px; text-align: left; white-space: nowrap; }
+    th { background: #f1f8ff; position: sticky; top: 0; }
+    @media (max-width: 1040px) {
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .signal-grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .charts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 26px; }
+      .hero-head { flex-direction: column; }
+      .score { width: 100%; max-width: 180px; }
+      .help-pop { left: auto; right: 0; max-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero reveal">
+      <div class="hero-head">
+        <div>
+          <p class="eyebrow">内容核心KPI日报</p>
+          <h1>内容核心KPI日报（近31天，含当日）_2026-03-18</h1>
+          <p class="meta">任务ID：fa84d08f-0536-4d71-ab00-567d33e2ffaf<br />JobID：notes_core_kpi_daily<br />时间范围：近31天（含当日）<br />数据来源：DMS DataService<br />生成时间：2026-03-18 23:12:31</p>
+        </div>
+        <div class="score">
+          <p class="v">40</p>
+          <p class="l"><span class="help-wrap help-down-left"><span>运营健康分</span><button type="button" class="help-btn" title="组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。" aria-label="运营健康分口径说明：组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。">?</button><span class="help-pop">组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。</span></span></p>
+          <p class="tag">预警</p>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>31天发布笔记总数</span><button type="button" class="help-btn" title="近31天满足口径的发布笔记总和。口径：notes.status=1、is_deleted=0、audit_result IN (2,5)，按 release_time 的日期统计。" aria-label="31天发布笔记总数口径说明：近31天满足口径的发布笔记总和。口径：notes.status=1、is_deleted=0、audit_result IN (2,5)，按 release_time 的日期统计。">?</button><span class="help-pop">近31天满足口径的发布笔记总和。口径：notes.status=1、is_deleted=0、audit_result IN (2,5)，按 release_time 的日期统计。</span></span></div><div class="value">1,810</div></div>
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>31天总阅读量</span><button type="button" class="help-btn" title="优先使用日汇总 total_readings；若缺失则按 发布笔记数×avg_click 估算，再汇总31天。" aria-label="31天总阅读量口径说明：优先使用日汇总 total_readings；若缺失则按 发布笔记数×avg_click 估算，再汇总31天。">?</button><span class="help-pop">优先使用日汇总 total_readings；若缺失则按 发布笔记数×avg_click 估算，再汇总31天。</span></span></div><div class="value">9,812</div></div>
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>31天总互动量</span><button type="button" class="help-btn" title="互动量=点赞+评论+收藏+分享。优先使用 total_interactions；缺失时按（发布量×平均互动）或（阅读量×互动率）估算。" aria-label="31天总互动量口径说明：互动量=点赞+评论+收藏+分享。优先使用 total_interactions；缺失时按（发布量×平均互动）或（阅读量×互动率）估算。">?</button><span class="help-pop">互动量=点赞+评论+收藏+分享。优先使用 total_interactions；缺失时按（发布量×平均互动）或（阅读量×互动率）估算。</span></span></div><div class="value">1,279</div></div>
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>最新日质量分（2026-03-18）</span><button type="button" class="help-btn" title="最新日期=2026-03-18。该日平均笔记分（100分制），来源 notes.score 均值。" aria-label="最新日质量分（2026-03-18）口径说明：最新日期=2026-03-18。该日平均笔记分（100分制），来源 notes.score 均值。">?</button><span class="help-pop">最新日期=2026-03-18。该日平均笔记分（100分制），来源 notes.score 均值。</span></span></div><div class="value">59.14</div></div>
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>最新日高质占比（2026-03-18）</span><button type="button" class="help-btn" title="最新日期=2026-03-18。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。" aria-label="最新日高质占比（2026-03-18）口径说明：最新日期=2026-03-18。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。">?</button><span class="help-pop">最新日期=2026-03-18。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。</span></span></div><div class="value">7.69%</div></div>
+        <div class="metric"><div class="label"><span class="help-wrap help-down-left"><span>31天整体互动率</span><button type="button" class="help-btn" title="整体互动率=近31天总互动量 / 近31天总阅读量 ×100%。" aria-label="31天整体互动率口径说明：整体互动率=近31天总互动量 / 近31天总阅读量 ×100%。">?</button><span class="help-pop">整体互动率=近31天总互动量 / 近31天总阅读量 ×100%。</span></span></div><div class="value">13.04%</div></div>
+      </div>
+    </section>
+
+    <section class="signal-grid reveal">
+      <article class="signal">
+        <div class="label"><span class="help-wrap help-down-left"><span>最新日发文趋势（2026-03-18）</span><button type="button" class="help-btn" title="主值=最新日发文量相对前一日环比；副文=最新日阅读量相对前一日环比。" aria-label="最新日发文趋势（2026-03-18）口径说明：主值=最新日发文量相对前一日环比；副文=最新日阅读量相对前一日环比。">?</button><span class="help-pop">主值=最新日发文量相对前一日环比；副文=最新日阅读量相对前一日环比。</span></span></div>
+        <div class="value" style="color: var(--signal-red)">-24.3%</div>
+        <div class="desc">阅读量日环比 -28.4%</div>
+      </article>
+      <article class="signal">
+        <div class="label"><span class="help-wrap help-down-left"><span>受欢迎笔记（近31天）</span><button type="button" class="help-btn" title="按 total_interactions 降序（再按 click_num 降序）取 Top1 笔记，时间范围为近31天（含当日）。" aria-label="受欢迎笔记（近31天）口径说明：按 total_interactions 降序（再按 click_num 降序）取 Top1 笔记，时间范围为近31天（含当日）。">?</button><span class="help-pop">按 total_interactions 降序（再按 click_num 降序）取 Top1 笔记，时间范围为近31天（含当日）。</span></span></div>
+        <div class="value" style="color: var(--signal-orange)">53393</div>
+        <div class="desc">互动 22，阅读 52</div>
+      </article>
+      <article class="signal">
+        <div class="label"><span class="help-wrap help-down-left"><span>热门话题 / 创作者</span><button type="button" class="help-btn" title="分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。" aria-label="热门话题 / 创作者口径说明：分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。">?</button><span class="help-pop">分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。</span></span></div>
+        <div class="value" style="color: var(--signal-green)">未挂话题</div>
+        <div class="desc">话题互动 660；创作者 7067954（互动 57）</div>
+      </article>
+    </section>
+
+
+
+    <section class="card reveal">
+      <h2>业务结论</h2>
+      <div class="summary-pill">一句话判断：本次数据质量总体可用，建议先明确关键字段业务含义，再开展指标口径分析</div>
+      <div class="summary-grid">
+        <div class="summary-box">
+          <h3>管理层摘要</h3>
+          <div class="summary-kv"><p class="summary-kv-label">重点词</p><div class="summary-chip-row"><span class="summary-chip">建议</span></div></div>
+          <p class="summary-rich">本次数据质量总体可用，<span class="token token-action">建议</span>先明确关键字段业务含义，再开展指标口径分析。</p>
+          <h3>核心发现</h3>
+          <ul><li>数据总行数 31，总列数 16</li><li>重复率 0%</li></ul>
+        </div>
+        <div class="summary-box">
+          <h3>行动建议</h3>
+          <ul><li>近7天总互动量较前7天下降 54.0%，建议调整发文节奏并补强互动引导。</li><li>最新高质量笔记占比仅 7.69%，建议提高内容准入标准并复用高分模板。</li></ul>
+          <h3>业务解读</h3>
+          <ul><li>字段业务语义未提供，业务解读存在不确定性。</li><li>存在时间字段，可进一步做按日/周趋势分析（需确认字段含义）。</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card reveal">
+      <h2>数据图表</h2>
+      <div class="charts">
+        <div id="chart-publish" class="chart"></div>
+        <div id="chart-type" class="chart"></div>
+      </div>
+      <div class="charts wide">
+        <div id="chart-quality" class="chart"></div>
+        <div id="chart-engagement" class="chart"></div>
+      </div>
+      <div class="charts wide">
+        <div id="chart-interaction-mix" class="chart"></div>
+      </div>
+    </section>
+
+
+    <section class="card reveal">
+      <h2>受欢迎笔记Top榜（近31天）</h2>
+      <div class="table-toolbar">
+        <span class="rule-chip"><strong>排序规则：</strong>按 total_interactions 降序，其次 click_num 降序</span>
+        <span class="rule-chip">展示 30 行 / 共 50 行</span>
+      </div>
+      <div class="insight-row"><span class="insight-chip">低互动率样本 1/30（&lt;5%）</span><span class="insight-chip">高互动率样本 15/30（&gt;=20%）</span></div>
+      <div style="overflow:auto">
+        <table class="enhanced-table">
+          <thead><tr><th class="rank-col">排名</th><th>笔记ID</th><th>发布日期</th><th>话题名称</th><th>点击数</th><th>点赞数</th><th>评论数</th><th>收藏数</th><th>分享数</th><th>总互动量</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td class="rank-col"><span class="rank-pill rank-top">TOP1</span></td><td>53,393</td><td>2026-03-05</td><td>未挂话题</td><td class="metric-cell"><span>52</span><span class="mini-bar"><span style="width:23.0%"></span></span></td><td>4</td><td>16</td><td>0</td><td>2</td><td class="metric-cell"><span>22</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>42.31%</span><span class="mini-bar"><span style="width:84.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP2</span></td><td>53,787</td><td>2026-03-10</td><td>未挂话题</td><td class="metric-cell"><span>56</span><span class="mini-bar"><span style="width:24.8%"></span></span></td><td>12</td><td>3</td><td>0</td><td>0</td><td class="metric-cell"><span>15</span><span class="mini-bar"><span style="width:68.2%"></span></span></td><td class="metric-cell"><span>26.79%</span><span class="mini-bar"><span style="width:53.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP3</span></td><td>52,672</td><td>2026-02-17</td><td>岁岁安康·过好年</td><td class="metric-cell"><span>79</span><span class="mini-bar"><span style="width:35.0%"></span></span></td><td>7</td><td>5</td><td>0</td><td>1</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:59.1%"></span></span></td><td class="metric-cell"><span>16.46%</span><span class="mini-bar"><span style="width:32.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">4</span></td><td>53,293</td><td>2026-03-03</td><td>舌尖上的做饭家</td><td class="metric-cell"><span>37</span><span class="mini-bar"><span style="width:16.4%"></span></span></td><td>10</td><td>3</td><td>0</td><td>0</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:59.1%"></span></span></td><td class="metric-cell"><span>35.14%</span><span class="mini-bar"><span style="width:70.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">5</span></td><td>52,996</td><td>2026-02-28</td><td>我与好慷的小确幸</td><td class="metric-cell"><span>26</span><span class="mini-bar"><span style="width:11.5%"></span></span></td><td>10</td><td>1</td><td>1</td><td>1</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:59.1%"></span></span></td><td class="metric-cell"><span>50.00%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">6</span></td><td>52,923</td><td>2026-02-27</td><td>我想对客户说</td><td class="metric-cell"><span>69</span><span class="mini-bar"><span style="width:30.5%"></span></span></td><td>7</td><td>0</td><td>2</td><td>3</td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:54.5%"></span></span></td><td class="metric-cell"><span>17.39%</span><span class="mini-bar"><span style="width:34.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">7</span></td><td>53,547</td><td>2026-03-07</td><td>深度清洁大作战</td><td class="metric-cell"><span>59</span><span class="mini-bar"><span style="width:26.1%"></span></span></td><td>8</td><td>0</td><td>0</td><td>4</td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:54.5%"></span></span></td><td class="metric-cell"><span>20.34%</span><span class="mini-bar"><span style="width:40.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">8</span></td><td>53,001</td><td>2026-02-28</td><td>每天一个小技巧</td><td class="metric-cell"><span>75</span><span class="mini-bar"><span style="width:33.2%"></span></span></td><td>7</td><td>0</td><td>3</td><td>1</td><td class="metric-cell"><span>11</span><span class="mini-bar"><span style="width:50.0%"></span></span></td><td class="metric-cell"><span>14.67%</span><span class="mini-bar"><span style="width:29.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">9</span></td><td>52,977</td><td>2026-02-28</td><td>未挂话题</td><td class="metric-cell"><span>68</span><span class="mini-bar"><span style="width:30.1%"></span></span></td><td>6</td><td>0</td><td>1</td><td>4</td><td class="metric-cell"><span>11</span><span class="mini-bar"><span style="width:50.0%"></span></span></td><td class="metric-cell"><span>16.18%</span><span class="mini-bar"><span style="width:32.4%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">10</span></td><td>52,919</td><td>2026-02-27</td><td>我想对客户说</td><td class="metric-cell"><span>65</span><span class="mini-bar"><span style="width:28.8%"></span></span></td><td>8</td><td>0</td><td>2</td><td>0</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:45.5%"></span></span></td><td class="metric-cell"><span>15.38%</span><span class="mini-bar"><span style="width:30.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">11</span></td><td>53,357</td><td>2026-03-05</td><td>每天一个小技巧</td><td class="metric-cell"><span>61</span><span class="mini-bar"><span style="width:27.0%"></span></span></td><td>9</td><td>0</td><td>1</td><td>0</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:45.5%"></span></span></td><td class="metric-cell"><span>16.39%</span><span class="mini-bar"><span style="width:32.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">12</span></td><td>53,821</td><td>2026-03-11</td><td>未挂话题</td><td class="metric-cell"><span>22</span><span class="mini-bar"><span style="width:9.7%"></span></span></td><td>10</td><td>0</td><td>0</td><td>0</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:45.5%"></span></span></td><td class="metric-cell"><span>45.45%</span><span class="mini-bar"><span style="width:90.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">13</span></td><td>52,787</td><td>2026-02-24</td><td>岁岁安康·过好年</td><td class="metric-cell"><span>226</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td>7</td><td>1</td><td>0</td><td>1</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:40.9%"></span></span></td><td class="metric-cell"><span>3.98%</span><span class="mini-bar"><span style="width:8.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">14</span></td><td>52,792</td><td>2026-02-24</td><td>未挂话题</td><td class="metric-cell"><span>76</span><span class="mini-bar"><span style="width:33.6%"></span></span></td><td>5</td><td>0</td><td>1</td><td>3</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:40.9%"></span></span></td><td class="metric-cell"><span>11.84%</span><span class="mini-bar"><span style="width:23.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">15</span></td><td>53,312</td><td>2026-03-04</td><td>舌尖上的做饭家</td><td class="metric-cell"><span>42</span><span class="mini-bar"><span style="width:18.6%"></span></span></td><td>7</td><td>0</td><td>1</td><td>1</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:40.9%"></span></span></td><td class="metric-cell"><span>21.43%</span><span class="mini-bar"><span style="width:42.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">16</span></td><td>53,075</td><td>2026-03-01</td><td>每天一个小技巧</td><td class="metric-cell"><span>42</span><span class="mini-bar"><span style="width:18.6%"></span></span></td><td>6</td><td>1</td><td>0</td><td>1</td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:36.4%"></span></span></td><td class="metric-cell"><span>19.05%</span><span class="mini-bar"><span style="width:38.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">17</span></td><td>53,561</td><td>2026-03-07</td><td>211本分保姆</td><td class="metric-cell"><span>17</span><span class="mini-bar"><span style="width:7.5%"></span></span></td><td>5</td><td>3</td><td>0</td><td>0</td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:36.4%"></span></span></td><td class="metric-cell"><span>47.06%</span><span class="mini-bar"><span style="width:94.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">18</span></td><td>52,903</td><td>2026-02-27</td><td>未挂话题</td><td class="metric-cell"><span>105</span><span class="mini-bar"><span style="width:46.5%"></span></span></td><td>4</td><td>0</td><td>2</td><td>1</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>6.67%</span><span class="mini-bar"><span style="width:13.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">19</span></td><td>53,811</td><td>2026-03-11</td><td>“治愈”的收纳</td><td class="metric-cell"><span>61</span><span class="mini-bar"><span style="width:27.0%"></span></span></td><td>5</td><td>2</td><td>0</td><td>0</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>11.48%</span><span class="mini-bar"><span style="width:23.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">20</span></td><td>52,956</td><td>2026-02-27</td><td>舌尖上的做饭家</td><td class="metric-cell"><span>45</span><span class="mini-bar"><span style="width:19.9%"></span></span></td><td>3</td><td>3</td><td>0</td><td>1</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>15.56%</span><span class="mini-bar"><span style="width:31.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">21</span></td><td>53,327</td><td>2026-03-04</td><td>舌尖上的做饭家</td><td class="metric-cell"><span>27</span><span class="mini-bar"><span style="width:11.9%"></span></span></td><td>7</td><td>0</td><td>0</td><td>0</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>25.93%</span><span class="mini-bar"><span style="width:51.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">22</span></td><td>53,808</td><td>2026-03-11</td><td>未挂话题</td><td class="metric-cell"><span>25</span><span class="mini-bar"><span style="width:11.1%"></span></span></td><td>6</td><td>0</td><td>1</td><td>0</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>28.00%</span><span class="mini-bar"><span style="width:56.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">23</span></td><td>53,416</td><td>2026-03-05</td><td>保洁“魔法秀”</td><td class="metric-cell"><span>21</span><span class="mini-bar"><span style="width:9.3%"></span></span></td><td>7</td><td>0</td><td>0</td><td>0</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>33.33%</span><span class="mini-bar"><span style="width:66.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">24</span></td><td>52,681</td><td>2026-02-17</td><td>感动服务</td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:6.2%"></span></span></td><td>6</td><td>0</td><td>0</td><td>1</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>50.00%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">25</span></td><td>53,815</td><td>2026-03-11</td><td>“治愈”的收纳</td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:6.2%"></span></span></td><td>5</td><td>1</td><td>1</td><td>0</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:31.8%"></span></span></td><td class="metric-cell"><span>50.00%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">26</span></td><td>52,863</td><td>2026-02-26</td><td>未挂话题</td><td class="metric-cell"><span>84</span><span class="mini-bar"><span style="width:37.2%"></span></span></td><td>5</td><td>0</td><td>1</td><td>0</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:27.3%"></span></span></td><td class="metric-cell"><span>7.14%</span><span class="mini-bar"><span style="width:14.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">27</span></td><td>53,384</td><td>2026-03-05</td><td>未挂话题</td><td class="metric-cell"><span>55</span><span class="mini-bar"><span style="width:24.3%"></span></span></td><td>3</td><td>0</td><td>0</td><td>3</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:27.3%"></span></span></td><td class="metric-cell"><span>10.91%</span><span class="mini-bar"><span style="width:21.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">28</span></td><td>53,214</td><td>2026-03-02</td><td>每天一个小技巧</td><td class="metric-cell"><span>38</span><span class="mini-bar"><span style="width:16.8%"></span></span></td><td>6</td><td>0</td><td>0</td><td>0</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:27.3%"></span></span></td><td class="metric-cell"><span>15.79%</span><span class="mini-bar"><span style="width:31.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">29</span></td><td>53,657</td><td>2026-03-09</td><td>每天一个小技巧</td><td class="metric-cell"><span>28</span><span class="mini-bar"><span style="width:12.4%"></span></span></td><td>5</td><td>0</td><td>1</td><td>0</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:27.3%"></span></span></td><td class="metric-cell"><span>21.43%</span><span class="mini-bar"><span style="width:42.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">30</span></td><td>53,189</td><td>2026-03-02</td><td>211本分保姆</td><td class="metric-cell"><span>18</span><span class="mini-bar"><span style="width:8.0%"></span></span></td><td>6</td><td>0</td><td>0</td><td>0</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:27.3%"></span></span></td><td class="metric-cell"><span>33.33%</span><span class="mini-bar"><span style="width:66.7%"></span></span></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>热门话题Top榜（近31天）</h2>
+      <div class="table-toolbar">
+        <span class="rule-chip"><strong>排序规则：</strong>按 total_interactions 降序，其次 notes_cnt 降序</span>
+        <span class="rule-chip">共 17 行</span>
+      </div>
+      <div class="insight-row"><span class="insight-chip">头部集中明显：Top1互动约为中位数 21.3 倍</span><span class="insight-chip">低互动率样本 1/17（&lt;5%）</span><span class="insight-chip">高互动率样本 2/17（&gt;=20%）</span></div>
+      <div style="overflow:auto">
+        <table class="enhanced-table">
+          <thead><tr><th class="rank-col">排名</th><th>话题名称</th><th>笔记数</th><th>作者数</th><th>总阅读量</th><th>总互动量</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td class="rank-col"><span class="rank-pill rank-top">TOP1</span></td><td>未挂话题</td><td class="metric-cell"><span>1,272</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>432</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>5,265</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>660</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>12.54%</span><span class="mini-bar"><span style="width:49.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP2</span></td><td>舌尖上的做饭家</td><td class="metric-cell"><span>109</span><span class="mini-bar"><span style="width:8.6%"></span></span></td><td class="metric-cell"><span>79</span><span class="mini-bar"><span style="width:18.3%"></span></span></td><td class="metric-cell"><span>678</span><span class="mini-bar"><span style="width:12.9%"></span></span></td><td class="metric-cell"><span>109</span><span class="mini-bar"><span style="width:16.5%"></span></span></td><td class="metric-cell"><span>16.08%</span><span class="mini-bar"><span style="width:63.2%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP3</span></td><td>岁岁安康·过好年</td><td class="metric-cell"><span>86</span><span class="mini-bar"><span style="width:6.8%"></span></span></td><td class="metric-cell"><span>69</span><span class="mini-bar"><span style="width:16.0%"></span></span></td><td class="metric-cell"><span>1,095</span><span class="mini-bar"><span style="width:20.8%"></span></span></td><td class="metric-cell"><span>106</span><span class="mini-bar"><span style="width:16.1%"></span></span></td><td class="metric-cell"><span>9.68%</span><span class="mini-bar"><span style="width:38.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">4</span></td><td>深度清洁大作战</td><td class="metric-cell"><span>45</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>28</span><span class="mini-bar"><span style="width:6.5%"></span></span></td><td class="metric-cell"><span>524</span><span class="mini-bar"><span style="width:10.0%"></span></span></td><td class="metric-cell"><span>70</span><span class="mini-bar"><span style="width:10.6%"></span></span></td><td class="metric-cell"><span>13.36%</span><span class="mini-bar"><span style="width:52.5%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">5</span></td><td>211本分保姆</td><td class="metric-cell"><span>70</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>31</span><span class="mini-bar"><span style="width:7.2%"></span></span></td><td class="metric-cell"><span>311</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>60</span><span class="mini-bar"><span style="width:9.1%"></span></span></td><td class="metric-cell"><span>19.29%</span><span class="mini-bar"><span style="width:75.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">6</span></td><td>保洁“魔法秀”</td><td class="metric-cell"><span>71</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>54</span><span class="mini-bar"><span style="width:12.5%"></span></span></td><td class="metric-cell"><span>421</span><span class="mini-bar"><span style="width:8.0%"></span></span></td><td class="metric-cell"><span>53</span><span class="mini-bar"><span style="width:8.0%"></span></span></td><td class="metric-cell"><span>12.59%</span><span class="mini-bar"><span style="width:49.5%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">7</span></td><td>每天一个小技巧</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>324</span><span class="mini-bar"><span style="width:6.2%"></span></span></td><td class="metric-cell"><span>51</span><span class="mini-bar"><span style="width:7.7%"></span></span></td><td class="metric-cell"><span>15.74%</span><span class="mini-bar"><span style="width:61.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">8</span></td><td>我想对客户说</td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>177</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>36</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>20.34%</span><span class="mini-bar"><span style="width:79.9%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">9</span></td><td>感动服务</td><td class="metric-cell"><span>44</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>42</span><span class="mini-bar"><span style="width:9.7%"></span></span></td><td class="metric-cell"><span>211</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>31</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>14.69%</span><span class="mini-bar"><span style="width:57.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">10</span></td><td>“治愈”的收纳</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>138</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>24</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>17.39%</span><span class="mini-bar"><span style="width:68.3%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">11</span></td><td>服务有“温度”</td><td class="metric-cell"><span>17</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>15</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>157</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>20</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>12.74%</span><span class="mini-bar"><span style="width:50.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">12</span></td><td>服务好慷来把关</td><td class="metric-cell"><span>30</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>22</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>145</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>18</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>12.41%</span><span class="mini-bar"><span style="width:48.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">13</span></td><td>我与好慷的小确幸</td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>55</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>25.45%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">14</span></td><td>最美洗衣店</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>64</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>18.75%</span><span class="mini-bar"><span style="width:73.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">15</span></td><td>持证上岗才靠谱</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>122</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>5.74%</span><span class="mini-bar"><span style="width:22.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">16</span></td><td>万家灯火·有你有我</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>44</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>9.09%</span><span class="mini-bar"><span style="width:35.7%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">17</span></td><td>找工作来好慷</td><td class="metric-cell"><span>3</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>3</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>16</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>0</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>0.00%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>热门创作者Top榜（近31天）</h2>
+      <div class="table-toolbar">
+        <span class="rule-chip"><strong>排序规则：</strong>按 total_interactions 降序，其次 total_readings 降序</span>
+        <span class="rule-chip">展示 20 行 / 共 40 行</span>
+      </div>
+      <div class="insight-row"><span class="insight-chip">头部集中明显：Top1互动约为中位数 3.0 倍</span><span class="insight-chip">高互动率样本 7/20（&gt;=20%）</span></div>
+      <div style="overflow:auto">
+        <table class="enhanced-table">
+          <thead><tr><th class="rank-col">排名</th><th>用户ID</th><th>笔记数</th><th>总阅读量</th><th>总互动量</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td class="rank-col"><span class="rank-pill rank-top">TOP1</span></td><td>7,067,954</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:25.0%"></span></span></td><td class="metric-cell"><span>338</span><span class="mini-bar"><span style="width:85.4%"></span></span></td><td class="metric-cell"><span>57</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>16.86%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP2</span></td><td>7,145,592</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:46.4%"></span></span></td><td class="metric-cell"><span>396</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>45</span><span class="mini-bar"><span style="width:78.9%"></span></span></td><td class="metric-cell"><span>11.36%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill rank-top">TOP3</span></td><td>7,617,015</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:21.4%"></span></span></td><td class="metric-cell"><span>383</span><span class="mini-bar"><span style="width:96.7%"></span></span></td><td class="metric-cell"><span>45</span><span class="mini-bar"><span style="width:78.9%"></span></span></td><td class="metric-cell"><span>11.75%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">4</span></td><td>1,529,760</td><td class="metric-cell"><span>28</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td class="metric-cell"><span>60</span><span class="mini-bar"><span style="width:15.2%"></span></span></td><td class="metric-cell"><span>38</span><span class="mini-bar"><span style="width:66.7%"></span></span></td><td class="metric-cell"><span>63.33%</span><span class="mini-bar"><span style="width:21.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">5</span></td><td>8,218,441</td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:42.9%"></span></span></td><td class="metric-cell"><span>354</span><span class="mini-bar"><span style="width:89.4%"></span></span></td><td class="metric-cell"><span>30</span><span class="mini-bar"><span style="width:52.6%"></span></span></td><td class="metric-cell"><span>8.47%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">6</span></td><td>8,956,372</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:7.1%"></span></span></td><td class="metric-cell"><span>61</span><span class="mini-bar"><span style="width:15.4%"></span></span></td><td class="metric-cell"><span>27</span><span class="mini-bar"><span style="width:47.4%"></span></span></td><td class="metric-cell"><span>44.26%</span><span class="mini-bar"><span style="width:14.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">7</span></td><td>9,286,191</td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:28.6%"></span></span></td><td class="metric-cell"><span>197</span><span class="mini-bar"><span style="width:49.7%"></span></span></td><td class="metric-cell"><span>26</span><span class="mini-bar"><span style="width:45.6%"></span></span></td><td class="metric-cell"><span>13.20%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">8</span></td><td>5,968,443</td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:42.9%"></span></span></td><td class="metric-cell"><span>151</span><span class="mini-bar"><span style="width:38.1%"></span></span></td><td class="metric-cell"><span>22</span><span class="mini-bar"><span style="width:38.6%"></span></span></td><td class="metric-cell"><span>14.57%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">9</span></td><td>3,588,238</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:17.9%"></span></span></td><td class="metric-cell"><span>115</span><span class="mini-bar"><span style="width:29.0%"></span></span></td><td class="metric-cell"><span>22</span><span class="mini-bar"><span style="width:38.6%"></span></span></td><td class="metric-cell"><span>19.13%</span><span class="mini-bar"><span style="width:6.4%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">10</span></td><td>9,126,215</td><td class="metric-cell"><span>24</span><span class="mini-bar"><span style="width:85.7%"></span></span></td><td class="metric-cell"><span>154</span><span class="mini-bar"><span style="width:38.9%"></span></span></td><td class="metric-cell"><span>19</span><span class="mini-bar"><span style="width:33.3%"></span></span></td><td class="metric-cell"><span>12.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">11</span></td><td>9,433,385</td><td class="metric-cell"><span>20</span><span class="mini-bar"><span style="width:71.4%"></span></span></td><td class="metric-cell"><span>24</span><span class="mini-bar"><span style="width:6.1%"></span></span></td><td class="metric-cell"><span>19</span><span class="mini-bar"><span style="width:33.3%"></span></span></td><td class="metric-cell"><span>79.17%</span><span class="mini-bar"><span style="width:26.4%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">12</span></td><td>9,605,234</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:17.9%"></span></span></td><td class="metric-cell"><span>92</span><span class="mini-bar"><span style="width:23.2%"></span></span></td><td class="metric-cell"><span>18</span><span class="mini-bar"><span style="width:31.6%"></span></span></td><td class="metric-cell"><span>19.57%</span><span class="mini-bar"><span style="width:6.5%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">13</span></td><td>9,967,810</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:17.9%"></span></span></td><td class="metric-cell"><span>88</span><span class="mini-bar"><span style="width:22.2%"></span></span></td><td class="metric-cell"><span>18</span><span class="mini-bar"><span style="width:31.6%"></span></span></td><td class="metric-cell"><span>20.45%</span><span class="mini-bar"><span style="width:6.8%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">14</span></td><td>8,302,480</td><td class="metric-cell"><span>18</span><span class="mini-bar"><span style="width:64.3%"></span></span></td><td class="metric-cell"><span>104</span><span class="mini-bar"><span style="width:26.3%"></span></span></td><td class="metric-cell"><span>17</span><span class="mini-bar"><span style="width:29.8%"></span></span></td><td class="metric-cell"><span>16.35%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">15</span></td><td>4,830,195</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:32.1%"></span></span></td><td class="metric-cell"><span>76</span><span class="mini-bar"><span style="width:19.2%"></span></span></td><td class="metric-cell"><span>15</span><span class="mini-bar"><span style="width:26.3%"></span></span></td><td class="metric-cell"><span>19.74%</span><span class="mini-bar"><span style="width:6.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">16</span></td><td>9,057,654</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:7.1%"></span></span></td><td class="metric-cell"><span>83</span><span class="mini-bar"><span style="width:21.0%"></span></span></td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:24.6%"></span></span></td><td class="metric-cell"><span>16.87%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">17</span></td><td>2,539,238</td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:14.3%"></span></span></td><td class="metric-cell"><span>42</span><span class="mini-bar"><span style="width:10.6%"></span></span></td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:24.6%"></span></span></td><td class="metric-cell"><span>33.33%</span><span class="mini-bar"><span style="width:11.1%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">18</span></td><td>9,981,939</td><td class="metric-cell"><span>3</span><span class="mini-bar"><span style="width:10.7%"></span></span></td><td class="metric-cell"><span>32</span><span class="mini-bar"><span style="width:8.1%"></span></span></td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:24.6%"></span></span></td><td class="metric-cell"><span>43.75%</span><span class="mini-bar"><span style="width:14.6%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">19</span></td><td>9,997,512</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:25.0%"></span></span></td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:21.1%"></span></span></td><td class="metric-cell"><span>300.00%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td class="rank-col"><span class="rank-pill ">20</span></td><td>3,369,917</td><td class="metric-cell"><span>3</span><span class="mini-bar"><span style="width:10.7%"></span></span></td><td class="metric-cell"><span>73</span><span class="mini-bar"><span style="width:18.4%"></span></span></td><td class="metric-cell"><span>11</span><span class="mini-bar"><span style="width:19.3%"></span></span></td><td class="metric-cell"><span>15.07%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>全局标签维度占比（高质量已审核发布笔记）</h2>
+      <div class="table-toolbar">
+        <span class="rule-chip"><strong>排序规则：</strong>按标签类型分组后，按 notes_cnt 降序</span>
+        <span class="rule-chip">共 97 行</span>
+      </div>
+      <div class="insight-row"><span class="insight-chip">标签集中偏高：Top标签占比 91.37%</span></div>
+      <div style="overflow:auto">
+        <table class="enhanced-table">
+          <thead><tr><th>标签类型</th><th>tag_id</th><th>标签名称</th><th>笔记数</th><th>该类型总笔记数</th><th>笔记占比(%)</th></tr></thead>
+          <tbody><tr><td>用户动机标签</td><td>109</td><td>服务效果</td><td class="metric-cell"><span>17,377</span><span class="mini-bar"><span style="width:100.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>91.37%</span><span class="mini-bar"><span style="width:100.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>117</td><td>服务心得</td><td class="metric-cell"><span>8,258</span><span class="mini-bar"><span style="width:47.5%"></span></span></td><td>19,018</td><td class="metric-cell"><span>43.42%</span><span class="mini-bar"><span style="width:47.5%"></span></span></td></tr><tr><td>用户动机标签</td><td>113</td><td>暖心故事</td><td class="metric-cell"><span>1,209</span><span class="mini-bar"><span style="width:7.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>6.36%</span><span class="mini-bar"><span style="width:7.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>153</td><td>用户好评</td><td class="metric-cell"><span>1,000</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>5.26%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>132</td><td>专业科普</td><td class="metric-cell"><span>276</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>1.45%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>112</td><td>经验分享</td><td class="metric-cell"><span>245</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>1.29%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>141</td><td>攻略教程</td><td class="metric-cell"><span>212</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>1.11%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>182</td><td>专业培训</td><td class="metric-cell"><span>174</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.91%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>106</td><td>职业认证</td><td class="metric-cell"><span>161</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.85%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>138</td><td>评测对比</td><td class="metric-cell"><span>81</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.43%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>167</td><td>求职招聘</td><td class="metric-cell"><span>47</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.25%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>184</td><td>个人感悟</td><td class="metric-cell"><span>33</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.17%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>127</td><td>问答求助</td><td class="metric-cell"><span>21</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.11%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>185</td><td>大促活动</td><td class="metric-cell"><span>20</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.11%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>161</td><td>避坑指南</td><td class="metric-cell"><span>11</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.06%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>179</td><td>文化认同</td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.04%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>204</td><td>日常分享</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>用户动机标签</td><td>192</td><td>服务</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>19,018</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>156</td><td>服务效果分享</td><td class="metric-cell"><span>222</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>76.29%</span><span class="mini-bar"><span style="width:83.5%"></span></span></td></tr><tr><td>需求场景标签</td><td>172</td><td>服务心得</td><td class="metric-cell"><span>40</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>13.75%</span><span class="mini-bar"><span style="width:15.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>173</td><td>职业认证</td><td class="metric-cell"><span>17</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>5.84%</span><span class="mini-bar"><span style="width:6.4%"></span></span></td></tr><tr><td>需求场景标签</td><td>176</td><td>暖心故事</td><td class="metric-cell"><span>12</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>4.12%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>152</td><td>客户证言</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>2.06%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>200</td><td>死角打扫</td><td class="metric-cell"><span>3</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>1.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>174</td><td>攻略教程</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.69%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>175</td><td>服务记录</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.69%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>178</td><td>文化认同</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.69%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>177</td><td>求职招聘</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>196</td><td>家常菜</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>198</td><td>浴室</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>201</td><td>整理床铺</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>需求场景标签</td><td>202</td><td>细节打扫</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>291</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>107</td><td>星级家</td><td class="metric-cell"><span>12,589</span><span class="mini-bar"><span style="width:72.4%"></span></span></td><td>18,592</td><td class="metric-cell"><span>67.71%</span><span class="mini-bar"><span style="width:74.1%"></span></span></td></tr><tr><td>品牌标签</td><td>115</td><td>做饭家</td><td class="metric-cell"><span>4,174</span><span class="mini-bar"><span style="width:24.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>22.45%</span><span class="mini-bar"><span style="width:24.6%"></span></span></td></tr><tr><td>品牌标签</td><td>118</td><td>家师傅</td><td class="metric-cell"><span>1,300</span><span class="mini-bar"><span style="width:7.5%"></span></span></td><td>18,592</td><td class="metric-cell"><span>6.99%</span><span class="mini-bar"><span style="width:7.7%"></span></span></td></tr><tr><td>品牌标签</td><td>110</td><td>美橱家</td><td class="metric-cell"><span>213</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>1.15%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>105</td><td>职业化</td><td class="metric-cell"><span>126</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.68%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>142</td><td>小卡拉米</td><td class="metric-cell"><span>69</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.37%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>162</td><td>松道康养</td><td class="metric-cell"><span>61</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.33%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>122</td><td>万家灯火</td><td class="metric-cell"><span>32</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.17%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>160</td><td>宅洁士</td><td class="metric-cell"><span>10</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.05%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>139</td><td>金月子</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.04%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>128</td><td>服务者说</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>158</td><td>家内助</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>136</td><td>kalamini</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>124</td><td>星管家</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>146</td><td>安心住</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>品牌标签</td><td>165</td><td>86</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,592</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>108</td><td>日式保洁</td><td class="metric-cell"><span>12,720</span><span class="mini-bar"><span style="width:73.2%"></span></span></td><td>18,613</td><td class="metric-cell"><span>68.34%</span><span class="mini-bar"><span style="width:74.8%"></span></span></td></tr><tr><td>产品标签</td><td>116</td><td>做饭保姆</td><td class="metric-cell"><span>4,128</span><span class="mini-bar"><span style="width:23.8%"></span></span></td><td>18,613</td><td class="metric-cell"><span>22.18%</span><span class="mini-bar"><span style="width:24.3%"></span></span></td></tr><tr><td>产品标签</td><td>129</td><td>细致擦窗</td><td class="metric-cell"><span>252</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>1.35%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>134</td><td>油烟机蒸洗</td><td class="metric-cell"><span>210</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>1.13%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>119</td><td>空调蒸洗</td><td class="metric-cell"><span>189</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>1.02%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>145</td><td>全屋检修</td><td class="metric-cell"><span>150</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.81%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>137</td><td>除毛保洁</td><td class="metric-cell"><span>145</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.78%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>121</td><td>厨房蒸洗</td><td class="metric-cell"><span>98</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.53%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>144</td><td>浴室三宝</td><td class="metric-cell"><span>90</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.48%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>180</td><td>全屋大扫除</td><td class="metric-cell"><span>80</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.43%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>126</td><td>全屋收纳</td><td class="metric-cell"><span>63</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.34%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>183</td><td>洗香香</td><td class="metric-cell"><span>56</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.30%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>125</td><td>衣柜收纳</td><td class="metric-cell"><span>54</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.29%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>150</td><td>床垫除螨</td><td class="metric-cell"><span>43</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.23%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>190</td><td>好慷照护</td><td class="metric-cell"><span>40</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.21%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>111</td><td>卧室收纳</td><td class="metric-cell"><span>39</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.21%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>154</td><td>冰箱蒸洗</td><td class="metric-cell"><span>32</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.17%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>149</td><td>洗衣机蒸洗</td><td class="metric-cell"><span>27</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.15%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>171</td><td>淋浴房除垢</td><td class="metric-cell"><span>25</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.13%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>186</td><td>公寓打理</td><td class="metric-cell"><span>23</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.12%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>168</td><td>好慷康养</td><td class="metric-cell"><span>21</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.11%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>155</td><td>木地板保养</td><td class="metric-cell"><span>20</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.11%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>159</td><td>沙发清洗</td><td class="metric-cell"><span>19</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.10%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>114</td><td>儿童房收纳</td><td class="metric-cell"><span>17</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.09%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>135</td><td>卧室三宝</td><td class="metric-cell"><span>16</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.09%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>148</td><td>厨房收纳</td><td class="metric-cell"><span>14</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.08%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>194</td><td>小户型保洁</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.07%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>195</td><td>夜间保洁</td><td class="metric-cell"><span>13</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.07%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>181</td><td>全屋开荒</td><td class="metric-cell"><span>11</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.06%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>140</td><td>月龄月嫂</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.05%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>147</td><td>家电随心洗</td><td class="metric-cell"><span>9</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.05%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>170</td><td>上门喂猫</td><td class="metric-cell"><span>8</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.04%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>123</td><td>冰箱收纳</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.04%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>188</td><td>书房收纳</td><td class="metric-cell"><span>7</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.04%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>131</td><td>客厅三宝</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>166</td><td>橱柜收纳</td><td class="metric-cell"><span>6</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>133</td><td>窗帘清洗</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>169</td><td>奇宠乐园</td><td class="metric-cell"><span>5</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.03%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>157</td><td>地毯清洗</td><td class="metric-cell"><span>4</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.02%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>130</td><td>电器三兄弟</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>143</td><td>带砂除毛</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>189</td><td>好慷助浴</td><td class="metric-cell"><span>2</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>187</td><td>收纳规划</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>191</td><td>客餐厅收纳</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>193</td><td>饰品收纳</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>197</td><td>窗帘除尘</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>199</td><td>做饭保姆包年</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>203</td><td>春节大扫除</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr><tr><td>产品标签</td><td>205</td><td>阳台收纳</td><td class="metric-cell"><span>1</span><span class="mini-bar"><span style="width:6.0%"></span></span></td><td>18,613</td><td class="metric-cell"><span>0.01%</span><span class="mini-bar"><span style="width:6.0%"></span></span></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card reveal">
+      <h2>明细数据（全部31行）</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>78</td><td>67</td><td>0</td><td>69</td><td>9</td><td>1.62</td><td>0.17</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.71</td><td>0.17</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.78</td><td>0.20</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.76</td><td>0.50</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.50</td><td>0.88</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.47</td><td>0.67</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.76</td><td>0.77</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.86</td><td>0.60</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td></tr><tr><td>2026-02-26</td><td>43</td><td>35</td><td>0</td><td>39</td><td>4</td><td>7.21</td><td>0.77</td></tr><tr><td>2026-02-25</td><td>30</td><td>27</td><td>0</td><td>30</td><td>0</td><td>9.00</td><td>0.90</td></tr><tr><td>2026-02-24</td><td>37</td><td>34</td><td>0</td><td>32</td><td>5</td><td>20.38</td><td>0.89</td></tr><tr><td>2026-02-23</td><td>21</td><td>19</td><td>0</td><td>20</td><td>1</td><td>4.57</td><td>0.38</td></tr><tr><td>2026-02-22</td><td>14</td><td>13</td><td>0</td><td>12</td><td>2</td><td>14.21</td><td>0.93</td></tr><tr><td>2026-02-21</td><td>5</td><td>5</td><td>0</td><td>5</td><td>0</td><td>4.40</td><td>0.80</td></tr><tr><td>2026-02-20</td><td>19</td><td>18</td><td>0</td><td>17</td><td>2</td><td>6.79</td><td>0.68</td></tr><tr><td>2026-02-19</td><td>16</td><td>13</td><td>0</td><td>16</td><td>0</td><td>3.63</td><td>0.31</td></tr><tr><td>2026-02-18</td><td>19</td><td>17</td><td>0</td><td>18</td><td>1</td><td>11.84</td><td>0.84</td></tr><tr><td>2026-02-17</td><td>33</td><td>28</td><td>0</td><td>29</td><td>4</td><td>11.00</td><td>1.03</td></tr><tr><td>2026-02-16</td><td>72</td><td>61</td><td>0</td><td>63</td><td>9</td><td>5.46</td><td>0.74</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    const data = {"publishTrend":[{"dt":"2026-02-16","published":72,"active":61},{"dt":"2026-02-17","published":33,"active":28},{"dt":"2026-02-18","published":19,"active":17},{"dt":"2026-02-19","published":16,"active":13},{"dt":"2026-02-20","published":19,"active":18},{"dt":"2026-02-21","published":5,"active":5},{"dt":"2026-02-22","published":14,"active":13},{"dt":"2026-02-23","published":21,"active":19},{"dt":"2026-02-24","published":37,"active":34},{"dt":"2026-02-25","published":30,"active":27},{"dt":"2026-02-26","published":43,"active":35},{"dt":"2026-02-27","published":60,"active":52},{"dt":"2026-02-28","published":66,"active":51},{"dt":"2026-03-01","published":79,"active":60},{"dt":"2026-03-02","published":101,"active":78},{"dt":"2026-03-03","published":80,"active":64},{"dt":"2026-03-04","published":55,"active":49},{"dt":"2026-03-05","published":78,"active":66},{"dt":"2026-03-06","published":64,"active":61},{"dt":"2026-03-07","published":71,"active":52},{"dt":"2026-03-08","published":84,"active":58},{"dt":"2026-03-09","published":69,"active":59},{"dt":"2026-03-10","published":59,"active":50},{"dt":"2026-03-11","published":76,"active":61},{"dt":"2026-03-12","published":94,"active":72},{"dt":"2026-03-13","published":70,"active":57},{"dt":"2026-03-14","published":58,"active":51},{"dt":"2026-03-15","published":83,"active":59},{"dt":"2026-03-16","published":73,"active":63},{"dt":"2026-03-17","published":103,"active":66},{"dt":"2026-03-18","published":78,"active":67}],"typeTrend":[{"dt":"2026-02-16","text":0,"image":63,"video":9},{"dt":"2026-02-17","text":0,"image":29,"video":4},{"dt":"2026-02-18","text":0,"image":18,"video":1},{"dt":"2026-02-19","text":0,"image":16,"video":0},{"dt":"2026-02-20","text":0,"image":17,"video":2},{"dt":"2026-02-21","text":0,"image":5,"video":0},{"dt":"2026-02-22","text":0,"image":12,"video":2},{"dt":"2026-02-23","text":0,"image":20,"video":1},{"dt":"2026-02-24","text":0,"image":32,"video":5},{"dt":"2026-02-25","text":0,"image":30,"video":0},{"dt":"2026-02-26","text":0,"image":39,"video":4},{"dt":"2026-02-27","text":0,"image":59,"video":1},{"dt":"2026-02-28","text":0,"image":63,"video":3},{"dt":"2026-03-01","text":0,"image":74,"video":5},{"dt":"2026-03-02","text":0,"image":101,"video":0},{"dt":"2026-03-03","text":0,"image":76,"video":4},{"dt":"2026-03-04","text":0,"image":52,"video":3},{"dt":"2026-03-05","text":0,"image":77,"video":1},{"dt":"2026-03-06","text":0,"image":62,"video":2},{"dt":"2026-03-07","text":0,"image":69,"video":2},{"dt":"2026-03-08","text":0,"image":83,"video":1},{"dt":"2026-03-09","text":0,"image":69,"video":0},{"dt":"2026-03-10","text":0,"image":58,"video":1},{"dt":"2026-03-11","text":0,"image":72,"video":4},{"dt":"2026-03-12","text":0,"image":93,"video":1},{"dt":"2026-03-13","text":0,"image":65,"video":5},{"dt":"2026-03-14","text":0,"image":53,"video":5},{"dt":"2026-03-15","text":0,"image":77,"video":6},{"dt":"2026-03-16","text":0,"image":69,"video":4},{"dt":"2026-03-17","text":0,"image":94,"video":9},{"dt":"2026-03-18","text":0,"image":69,"video":9}],"qualityTrend":[{"dt":"2026-02-16","score":59.51},{"dt":"2026-02-17","score":59.85},{"dt":"2026-02-18","score":64.63},{"dt":"2026-02-19","score":56.75},{"dt":"2026-02-20","score":65.53},{"dt":"2026-02-21","score":62},{"dt":"2026-02-22","score":66.64},{"dt":"2026-02-23","score":61},{"dt":"2026-02-24","score":63.19},{"dt":"2026-02-25","score":62.37},{"dt":"2026-02-26","score":59.26},{"dt":"2026-02-27","score":62.22},{"dt":"2026-02-28","score":60.44},{"dt":"2026-03-01","score":62.54},{"dt":"2026-03-02","score":62.01},{"dt":"2026-03-03","score":60.55},{"dt":"2026-03-04","score":60},{"dt":"2026-03-05","score":61.17},{"dt":"2026-03-06","score":61.88},{"dt":"2026-03-07","score":58.79},{"dt":"2026-03-08","score":62.39},{"dt":"2026-03-09","score":59.32},{"dt":"2026-03-10","score":60.66},{"dt":"2026-03-11","score":60.39},{"dt":"2026-03-12","score":60.35},{"dt":"2026-03-13","score":61.61},{"dt":"2026-03-14","score":62.26},{"dt":"2026-03-15","score":64.1},{"dt":"2026-03-16","score":62.48},{"dt":"2026-03-17","score":59.56},{"dt":"2026-03-18","score":59.14}],"highQualityTrend":[{"dt":"2026-02-16","ratio":1.39},{"dt":"2026-02-17","ratio":3.03},{"dt":"2026-02-18","ratio":5.26},{"dt":"2026-02-19","ratio":0},{"dt":"2026-02-20","ratio":0},{"dt":"2026-02-21","ratio":0},{"dt":"2026-02-22","ratio":14.29},{"dt":"2026-02-23","ratio":4.76},{"dt":"2026-02-24","ratio":10.81},{"dt":"2026-02-25","ratio":13.33},{"dt":"2026-02-26","ratio":0},{"dt":"2026-02-27","ratio":15},{"dt":"2026-02-28","ratio":9.09},{"dt":"2026-03-01","ratio":11.39},{"dt":"2026-03-02","ratio":4.95},{"dt":"2026-03-03","ratio":5},{"dt":"2026-03-04","ratio":7.27},{"dt":"2026-03-05","ratio":8.97},{"dt":"2026-03-06","ratio":7.81},{"dt":"2026-03-07","ratio":4.23},{"dt":"2026-03-08","ratio":7.14},{"dt":"2026-03-09","ratio":8.7},{"dt":"2026-03-10","ratio":8.47},{"dt":"2026-03-11","ratio":5.26},{"dt":"2026-03-12","ratio":7.45},{"dt":"2026-03-13","ratio":14.29},{"dt":"2026-03-14","ratio":10.34},{"dt":"2026-03-15","ratio":16.87},{"dt":"2026-03-16","ratio":10.96},{"dt":"2026-03-17","ratio":7.77},{"dt":"2026-03-18","ratio":7.69}],"qualityFieldLabel":"平均笔记质量分","engagementTrend":[{"dt":"2026-02-16","readings":393,"interactions":53,"interactionRatePct":13.49},{"dt":"2026-02-17","readings":363,"interactions":41,"interactionRatePct":11.29},{"dt":"2026-02-18","readings":225,"interactions":16,"interactionRatePct":7.11},{"dt":"2026-02-19","readings":58,"interactions":5,"interactionRatePct":8.62},{"dt":"2026-02-20","readings":129,"interactions":16,"interactionRatePct":12.4},{"dt":"2026-02-21","readings":22,"interactions":5,"interactionRatePct":22.73},{"dt":"2026-02-22","readings":199,"interactions":14,"interactionRatePct":7.04},{"dt":"2026-02-23","readings":96,"interactions":12,"interactionRatePct":12.5},{"dt":"2026-02-24","readings":754,"interactions":41,"interactionRatePct":5.44},{"dt":"2026-02-25","readings":270,"interactions":32,"interactionRatePct":11.85},{"dt":"2026-02-26","readings":310,"interactions":34,"interactionRatePct":10.97},{"dt":"2026-02-27","readings":771,"interactions":75,"interactionRatePct":9.73},{"dt":"2026-02-28","readings":728,"interactions":75,"interactionRatePct":10.3},{"dt":"2026-03-01","readings":471,"interactions":57,"interactionRatePct":12.1},{"dt":"2026-03-02","readings":644,"interactions":55,"interactionRatePct":8.54},{"dt":"2026-03-03","readings":309,"interactions":52,"interactionRatePct":16.83},{"dt":"2026-03-04","readings":316,"interactions":55,"interactionRatePct":17.41},{"dt":"2026-03-05","readings":527,"interactions":82,"interactionRatePct":15.56},{"dt":"2026-03-06","readings":286,"interactions":50,"interactionRatePct":17.48},{"dt":"2026-03-07","readings":260,"interactions":65,"interactionRatePct":25},{"dt":"2026-03-08","readings":396,"interactions":69,"interactionRatePct":17.42},{"dt":"2026-03-09","readings":290,"interactions":47,"interactionRatePct":16.21},{"dt":"2026-03-10","readings":219,"interactions":52,"interactionRatePct":23.74},{"dt":"2026-03-11","readings":342,"interactions":74,"interactionRatePct":21.64},{"dt":"2026-03-12","readings":260,"interactions":40,"interactionRatePct":15.38},{"dt":"2026-03-13","readings":263,"interactions":37,"interactionRatePct":14.07},{"dt":"2026-03-14","readings":165,"interactions":40,"interactionRatePct":24.24},{"dt":"2026-03-15","readings":231,"interactions":22,"interactionRatePct":9.52},{"dt":"2026-03-16","readings":213,"interactions":30,"interactionRatePct":14.08},{"dt":"2026-03-17","readings":176,"interactions":20,"interactionRatePct":11.36},{"dt":"2026-03-18","readings":126,"interactions":13,"interactionRatePct":10.32}],"interactionMixTrend":[{"dt":"2026-02-16","like":53.28,"comment":0,"favorite":0,"share":0},{"dt":"2026-02-17","like":33.99,"comment":4.95,"favorite":0,"share":1.98},{"dt":"2026-02-18","like":15.96,"comment":0,"favorite":0,"share":0},{"dt":"2026-02-19","like":4.96,"comment":0,"favorite":0,"share":0},{"dt":"2026-02-20","like":12.92,"comment":2.09,"favorite":0.95,"share":0},{"dt":"2026-02-21","like":4,"comment":1,"favorite":0,"share":0},{"dt":"2026-02-22","like":13.02,"comment":0,"favorite":0,"share":0.98},{"dt":"2026-02-23","like":7.98,"comment":1.05,"favorite":1.05,"share":2.1},{"dt":"2026-02-24","like":32.93,"comment":1.85,"favorite":1.85,"share":4.07},{"dt":"2026-02-25","like":27,"comment":2.1,"favorite":2.1,"share":0.9},{"dt":"2026-02-26","like":33.11,"comment":0,"favorite":0.86,"share":0},{"dt":"2026-02-27","like":58.2,"comment":6,"favorite":6,"share":4.8},{"dt":"2026-02-28","like":60.72,"comment":1.98,"favorite":5.94,"share":5.94},{"dt":"2026-03-01","like":51.35,"comment":2.37,"favorite":2.37,"share":2.37},{"dt":"2026-03-02","like":52.52,"comment":1.01,"favorite":0,"share":1.01},{"dt":"2026-03-03","like":48,"comment":3.2,"favorite":0,"share":0.8},{"dt":"2026-03-04","like":50.05,"comment":2.2,"favorite":1.1,"share":2.2},{"dt":"2026-03-05","like":60.06,"comment":16.38,"favorite":0.78,"share":4.68},{"dt":"2026-03-06","like":42.88,"comment":7.04,"favorite":0,"share":0},{"dt":"2026-03-07","like":56.8,"comment":2.84,"favorite":0.71,"share":4.26},{"dt":"2026-03-08","like":61.32,"comment":1.68,"favorite":0.84,"share":5.04},{"dt":"2026-03-09","like":39.33,"comment":4.14,"favorite":2.76,"share":0.69},{"dt":"2026-03-10","like":47.79,"comment":2.95,"favorite":0,"share":1.18},{"dt":"2026-03-11","like":66.88,"comment":3.8,"favorite":3.04,"share":0},{"dt":"2026-03-12","like":31.96,"comment":4.7,"favorite":0,"share":2.82},{"dt":"2026-03-13","like":35,"comment":2.1,"favorite":0,"share":0},{"dt":"2026-03-14","like":38.86,"comment":0,"favorite":1.16,"share":0},{"dt":"2026-03-15","like":16.6,"comment":4.98,"favorite":0,"share":0},{"dt":"2026-03-16","like":26.28,"comment":3.65,"favorite":0,"share":0},{"dt":"2026-03-17","like":17.51,"comment":1.03,"favorite":0,"share":1.03},{"dt":"2026-03-18","like":13.26,"comment":0,"favorite":0,"share":0}],"interactionMixEstimated":true};
+    const publishChart = echarts.init(document.getElementById('chart-publish'));
+    publishChart.setOption({
+      title: { text: '每日发文与活跃创作者趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      legend: { top: 30 },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 22, top: 66, bottom: 64 },
+      xAxis: { type: 'category', data: data.publishTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+      series: [
+        {
+          name: '发布笔记数',
+          type: 'bar',
+          barMaxWidth: 22,
+          data: data.publishTrend.map(x => x.published),
+          itemStyle: { color: '#0ea5e9', borderRadius: [8, 8, 0, 0] }
+        },
+        {
+          name: '活跃创作者数',
+          type: 'line',
+          smooth: true,
+          data: data.publishTrend.map(x => x.active),
+          lineStyle: { width: 2.5, color: '#14b8a6' },
+          symbolSize: 7
+        }
+      ]
+    });
+
+    const typeChart = echarts.init(document.getElementById('chart-type'));
+    typeChart.setOption({
+      title: { text: '内容类型结构（日趋势）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      legend: { top: 30 },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 22, top: 66, bottom: 64 },
+      xAxis: { type: 'category', data: data.typeTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+      series: [
+        {
+          name: '文字笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.text),
+          itemStyle: { color: '#22c55e' }
+        },
+        {
+          name: '图文笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.image),
+          itemStyle: { color: '#3b82f6' }
+        },
+        {
+          name: '视频笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.video),
+          itemStyle: { color: '#f97316' }
+        }
+      ]
+    });
+
+    const qualityChart = echarts.init(document.getElementById('chart-quality'));
+    if (data.qualityTrend.some(x => x.score != null) || data.highQualityTrend.some(x => x.ratio != null)) {
+      qualityChart.setOption({
+        title: { text: (data.qualityFieldLabel || '笔记质量分') + '（100分制）趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 46, top: 66, bottom: 64 },
+        xAxis: {
+          type: 'category',
+          data: data.qualityTrend.map(x => x.dt),
+          axisLabel: { rotate: 28, color: '#334155' }
+        },
+        yAxis: [
+          { type: 'value', min: 0, max: 100, axisLabel: { color: '#334155' } },
+          { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%', color: '#334155' } }
+        ],
+        series: [
+          {
+            name: '质量分',
+            type: 'line',
+            smooth: true,
+            data: data.qualityTrend.map(x => x.score),
+            lineStyle: { width: 3, color: '#16a34a' },
+            areaStyle: { color: 'rgba(34, 197, 94, 0.15)' },
+            symbolSize: 6
+          },
+          {
+            name: '高质量占比',
+            type: 'line',
+            yAxisIndex: 1,
+            smooth: true,
+            data: data.highQualityTrend.map(x => x.ratio),
+            lineStyle: { width: 2.5, color: '#0f766e' },
+            symbolSize: 6
+          }
+        ]
+      });
+    } else {
+      qualityChart.setOption({
+        title: { text: '笔记质量分与高质量占比趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用质量分数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
+    const engagementChart = echarts.init(document.getElementById('chart-engagement'));
+    if (data.engagementTrend.length > 0) {
+      engagementChart.setOption({
+        title: { text: '每日阅读、互动与互动率趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 52, top: 66, bottom: 64 },
+        xAxis: { type: 'category', data: data.engagementTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+        yAxis: [
+          { type: 'value', axisLabel: { color: '#334155' } },
+          { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } }
+        ],
+        series: [
+          {
+            name: '阅读量',
+            type: 'bar',
+            barMaxWidth: 22,
+            data: data.engagementTrend.map(x => x.readings),
+            itemStyle: { color: '#0ea5e9', borderRadius: [8, 8, 0, 0] }
+          },
+          {
+            name: '互动量',
+            type: 'line',
+            smooth: true,
+            data: data.engagementTrend.map(x => x.interactions),
+            lineStyle: { width: 2.5, color: '#f97316' },
+            symbolSize: 7
+          },
+          {
+            name: '互动率',
+            type: 'line',
+            yAxisIndex: 1,
+            smooth: true,
+            data: data.engagementTrend.map(x => x.interactionRatePct),
+            lineStyle: { width: 2.5, color: '#7c3aed' },
+            symbolSize: 7
+          }
+        ]
+      });
+    } else {
+      engagementChart.setOption({
+        title: { text: '每日阅读、互动与互动率趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用互动/阅读数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
+    const interactionMixChart = echarts.init(document.getElementById('chart-interaction-mix'));
+    if (data.interactionMixTrend.length > 0) {
+      interactionMixChart.setOption({
+        title: {
+          text: '每日互动构成趋势（点赞/评论/收藏/分享）' + (data.interactionMixEstimated ? '（含估算）' : ''),
+          left: 'center',
+          textStyle: { fontWeight: 700, color: '#1e293b' }
+        },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 22, top: 66, bottom: 64 },
+        xAxis: {
+          type: 'category',
+          data: data.interactionMixTrend.map(x => x.dt),
+          axisLabel: { rotate: 28, color: '#334155' }
+        },
+        yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+        series: [
+          {
+            name: '点赞',
+            type: 'line',
+            smooth: true,
+            data: data.interactionMixTrend.map(x => x.like),
+            lineStyle: { width: 2.5, color: '#f97316' },
+            symbolSize: 6
+          },
+          {
+            name: '评论',
+            type: 'line',
+            smooth: true,
+            data: data.interactionMixTrend.map(x => x.comment),
+            lineStyle: { width: 2.5, color: '#0ea5e9' },
+            symbolSize: 6
+          },
+          {
+            name: '收藏',
+            type: 'line',
+            smooth: true,
+            data: data.interactionMixTrend.map(x => x.favorite),
+            lineStyle: { width: 2.5, color: '#22c55e' },
+            symbolSize: 6
+          },
+          {
+            name: '分享',
+            type: 'line',
+            smooth: true,
+            data: data.interactionMixTrend.map(x => x.share),
+            lineStyle: { width: 2.5, color: '#7c3aed' },
+            symbolSize: 6
+          }
+        ]
+      });
+    } else {
+      interactionMixChart.setOption({
+        title: { text: '每日互动构成趋势（点赞/评论/收藏/分享）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用互动构成数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
+    const helpWraps = Array.from(document.querySelectorAll('.help-wrap'));
+    const closeHelpPopovers = () => {
+      helpWraps.forEach((el) => el.classList.remove('open'));
+    };
+    helpWraps.forEach((el) => {
+      const btn = el.querySelector('.help-btn');
+      if (!btn) return;
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const willOpen = !el.classList.contains('open');
+        closeHelpPopovers();
+        if (willOpen) el.classList.add('open');
+      });
+    });
+    document.addEventListener('click', closeHelpPopovers);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeHelpPopovers();
+    });
+
+    document.querySelectorAll('.reveal').forEach((el, idx) => {
+      setTimeout(() => el.classList.add('in'), 80 + idx * 90);
+    });
+
+    window.addEventListener('resize', () => {
+      publishChart.resize();
+      typeChart.resize();
+      qualityChart.resize();
+      engagementChart.resize();
+      interactionMixChart.resize();
+    });
+  </script>
+</body>
+</html>
