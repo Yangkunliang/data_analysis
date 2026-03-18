@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容核心KPI日报（近30天）_2026-03-18</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --bg-0: #f6f9f4;
+      --bg-1: #eef4ff;
+      --ink: #0f172a;
+      --sub: #475569;
+      --panel: rgba(255, 255, 255, 0.88);
+      --line: #d7e1ef;
+      --signal-red: #dc2626;
+      --signal-orange: #ea580c;
+      --signal-green: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 700px at -10% -20%, #c5f0d2 0%, transparent 55%),
+        radial-gradient(900px 500px at 95% 0%, #c7d7ff 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+      font-family: "DIN Alternate", "Avenir Next", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .wrap { max-width: 1240px; margin: 28px auto 36px; padding: 0 18px 24px; }
+    .reveal { opacity: 0; transform: translateY(12px); transition: all .5s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .hero {
+      border-radius: 18px;
+      padding: 22px;
+      background: linear-gradient(130deg, #0f172a 0%, #0b3a78 45%, #0b8f6f 100%);
+      color: #f8fafc;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      right: -80px;
+      top: -110px;
+      background: rgba(255, 255, 255, 0.14);
+      filter: blur(4px);
+    }
+    .hero-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .eyebrow { margin: 0 0 8px; font-size: 12px; letter-spacing: 1.2px; color: #d1fae5; text-transform: uppercase; }
+    .hero h1 { margin: 0; font-size: 34px; line-height: 1.2; }
+    .hero .meta { margin: 8px 0 0; color: #cde4ff; font-size: 13px; line-height: 1.6; }
+    .score {
+      min-width: 116px;
+      padding: 14px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.09);
+      text-align: center;
+      backdrop-filter: blur(3px);
+    }
+    .score .v { margin: 0; font-size: 38px; line-height: 1; font-weight: 700; color: #16a34a; text-shadow: 0 0 8px rgba(255, 255, 255, 0.15); }
+    .score .l { margin: 6px 0 0; font-size: 13px; color: #e2e8f0; }
+    .score .tag { margin: 4px 0 0; font-size: 11px; color: #bae6fd; }
+    .metric-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .metric .label { font-size: 12px; color: #dbeafe; }
+    .metric .value { margin-top: 6px; font-size: 22px; font-weight: 700; color: #f8fafc; }
+    .signal-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .signal {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel);
+      backdrop-filter: blur(3px);
+    }
+    .signal .label { font-size: 12px; color: var(--sub); }
+    .signal .value { margin-top: 6px; font-size: 22px; font-weight: 700; }
+    .signal .desc { margin-top: 4px; color: var(--sub); font-size: 13px; }
+    .card {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      padding: 16px;
+      backdrop-filter: blur(3px);
+    }
+    .card h2 { margin: 0 0 10px; font-size: 22px; }
+    .summary-pill {
+      padding: 10px 12px;
+      border-left: 4px solid #0ea5e9;
+      background: #ecfeff;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .summary-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 12px; }
+    .summary-box {
+      border: 1px dashed #b6cadf;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .summary-box h3 { margin: 0 0 8px; font-size: 16px; }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 0 0 6px; line-height: 1.55; }
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .chart { height: 330px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, 0.75); }
+    .wide { margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid #dbe5f2; padding: 9px 10px; text-align: left; white-space: nowrap; }
+    th { background: #f1f8ff; position: sticky; top: 0; }
+    @media (max-width: 1040px) {
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .signal-grid { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .charts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 26px; }
+      .hero-head { flex-direction: column; }
+      .score { width: 100%; max-width: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero reveal">
+      <div class="hero-head">
+        <div>
+          <p class="eyebrow">内容核心KPI日报</p>
+          <h1>内容核心KPI日报（近30天）_2026-03-18</h1>
+          <p class="meta">任务ID：274bebb7-2ffc-43c9-805a-0070df4361ce<br />JobID：notes_core_kpi_daily<br />数据来源：模拟数据<br />生成时间：2026-03-18 18:53:06</p>
+        </div>
+        <div class="score">
+          <p class="v">100</p>
+          <p class="l">数据健康分</p>
+          <p class="tag">健康</p>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><div class="label">总行数</div><div class="value">40</div></div>
+        <div class="metric"><div class="label">总列数</div><div class="value">10</div></div>
+        <div class="metric"><div class="label">重复率</div><div class="value">0.00%</div></div>
+        <div class="metric"><div class="label">平均空值率</div><div class="value">0.00%</div></div>
+        <div class="metric"><div class="label">数值字段数</div><div class="value">7</div></div>
+      </div>
+    </section>
+
+    <section class="signal-grid reveal">
+      <article class="signal">
+        <div class="label">最高风险字段（空值）</div>
+        <div class="value" style="color: var(--signal-red)">笔记ID</div>
+        <div class="desc">空值率 0.00%</div>
+      </article>
+      <article class="signal">
+        <div class="label">内容分发集中度</div>
+        <div class="value" style="color: var(--signal-orange)">渠道</div>
+        <div class="desc">第一值 推荐，占比 35.00%</div>
+      </article>
+      <article class="signal">
+        <div class="label">峰值最高数值指标</div>
+        <div class="value" style="color: var(--signal-green)">笔记ID</div>
+        <div class="desc">最大值 900039.00</div>
+      </article>
+    </section>
+
+    <section class="card reveal">
+      <h2>业务结论</h2>
+      <div class="summary-pill">一句话判断：本次数据质量总体可用，建议先明确关键字段业务含义，再开展指标口径分析</div>
+      <div class="summary-grid">
+        <div class="summary-box">
+          <h3>管理层摘要</h3>
+          <p>本次数据质量总体可用，建议先明确关键字段业务含义，再开展指标口径分析。</p>
+          <h3>核心发现</h3>
+          <ul><li>数据总行数 40，总列数 10</li><li>重复率 0%</li></ul>
+        </div>
+        <div class="summary-box">
+          <h3>行动建议</h3>
+          <ul><li>核心质量指标整体稳定，建议继续跟踪头部类别占比和高空值字段。</li></ul>
+          <h3>业务解读</h3>
+          <ul><li>字段业务语义未提供，业务解读存在不确定性。</li><li>存在时间字段，可进一步做按日/周趋势分析（需确认字段含义）。</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card reveal">
+      <h2>数据图表</h2>
+      <div class="charts">
+        <div id="chart-null" class="chart"></div>
+        <div id="chart-topic" class="chart"></div>
+      </div>
+      <div class="charts wide">
+        <div id="chart-numeric" class="chart"></div>
+      </div>
+    </section>
+
+    <section class="card reveal">
+      <h2>样本数据（前10行）</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>笔记ID</th><th>话题名称</th><th>渠道</th><th>发布时间</th><th>点击数</th><th>点赞数</th><th>评论数</th><th>收藏数</th></tr></thead>
+          <tbody><tr><td>900000</td><td>家电清洗</td><td>推荐</td><td>2026-03-01 00:00:00</td><td>120</td><td>18</td><td>4</td><td>6</td></tr><tr><td>900001</td><td>收纳改造</td><td>关注</td><td>2026-03-02 00:00:00</td><td>137</td><td>25</td><td>9</td><td>17</td></tr><tr><td>900002</td><td>保洁技巧</td><td>搜索</td><td>2026-03-03 00:00:00</td><td>154</td><td>32</td><td>14</td><td>28</td></tr><tr><td>900003</td><td>服务故事</td><td>推荐</td><td>2026-03-04 00:00:00</td><td>171</td><td>39</td><td>19</td><td>39</td></tr><tr><td>900004</td><td>清洁工具测评</td><td>关注</td><td>2026-03-05 00:00:00</td><td>188</td><td>46</td><td>24</td><td>6</td></tr><tr><td>900005</td><td>家电清洗</td><td>搜索</td><td>2026-03-06 00:00:00</td><td>205</td><td>53</td><td>29</td><td>17</td></tr><tr><td>900006</td><td>收纳改造</td><td>推荐</td><td>2026-03-07 00:00:00</td><td>222</td><td>60</td><td>8</td><td>28</td></tr><tr><td>900007</td><td>保洁技巧</td><td>关注</td><td>2026-03-08 00:00:00</td><td>239</td><td>67</td><td>13</td><td>39</td></tr><tr><td>900008</td><td>服务故事</td><td>搜索</td><td>2026-03-09 00:00:00</td><td>256</td><td>74</td><td>18</td><td>6</td></tr><tr><td>900009</td><td>清洁工具测评</td><td>推荐</td><td>2026-03-10 00:00:00</td><td>273</td><td>21</td><td>23</td><td>17</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script>
+    const data = {"nullTop":[{"field":"note_id","label":"笔记ID","ratio":0},{"field":"topic_name","label":"话题名称","ratio":0},{"field":"channel","label":"渠道","ratio":0},{"field":"release_time","label":"发布时间","ratio":0},{"field":"click_num","label":"点击数","ratio":0},{"field":"like_num","label":"点赞数","ratio":0},{"field":"comment_num","label":"评论数","ratio":0},{"field":"favorite_num","label":"收藏数","ratio":0}],"topicTop":[{"field":"channel","label":"渠道","top":"推荐","ratio":35},{"field":"topic_name","label":"话题名称","top":"家电清洗","ratio":20}],"numericTop":[{"field":"note_id","label":"笔记ID","avg":900019.5,"p95":900037,"max":900039},{"field":"click_num","label":"点击数","avg":241.5,"p95":375,"max":392},{"field":"like_num","label":"点赞数","avg":46.5,"p95":74,"max":77},{"field":"favorite_num","label":"收藏数","avg":22.5,"p95":39,"max":39},{"field":"comment_num","label":"评论数","avg":16.35,"p95":28,"max":29},{"field":"share_num","label":"分享数","avg":8.35,"p95":15,"max":15},{"field":"interaction_rate","label":"互动率","avg":0.43,"p95":0.84,"max":0.93}]};
+    const nullChart = echarts.init(document.getElementById('chart-null'));
+    nullChart.setOption({
+      title: { text: '空值率高风险字段', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 16, top: 56, bottom: 64 },
+      xAxis: { type: 'category', data: data.nullTop.map(x => x.label), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } },
+      series: [{
+        type: 'bar',
+        data: data.nullTop.map(x => x.ratio),
+        barMaxWidth: 22,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#ef4444' },
+            { offset: 1, color: '#fca5a5' }
+          ]),
+          borderRadius: [8, 8, 0, 0]
+        }
+      }]
+    });
+
+    const topicChart = echarts.init(document.getElementById('chart-topic'));
+    topicChart.setOption({
+      title: { text: '类别字段集中度（第一值占比）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 16, top: 56, bottom: 64 },
+      xAxis: { type: 'category', data: data.topicTop.map(x => x.label), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } },
+      series: [{
+        type: 'line',
+        smooth: true,
+        areaStyle: { color: 'rgba(14, 165, 233, 0.15)' },
+        lineStyle: { width: 3, color: '#0284c7' },
+        symbolSize: 8,
+        data: data.topicTop.map(x => x.ratio)
+      }]
+    });
+
+    const numericChart = echarts.init(document.getElementById('chart-numeric'));
+    numericChart.setOption({
+      title: { text: '数值字段统计（平均值 / P95 / 最大值）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      legend: { top: 30 },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 22, top: 66, bottom: 64 },
+      xAxis: { type: 'category', data: data.numericTop.map(x => x.label), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+      series: [
+        {
+          name: '平均值',
+          type: 'bar',
+          barMaxWidth: 24,
+          data: data.numericTop.map(x => x.avg),
+          itemStyle: { color: '#10b981', borderRadius: [8, 8, 0, 0] }
+        },
+        {
+          name: 'P95',
+          type: 'line',
+          smooth: true,
+          data: data.numericTop.map(x => x.p95),
+          lineStyle: { width: 2.5, color: '#f59e0b' },
+          symbolSize: 7
+        },
+        {
+          name: '最大值',
+          type: 'line',
+          smooth: true,
+          data: data.numericTop.map(x => x.max),
+          lineStyle: { width: 2.5, color: '#dc2626' },
+          symbolSize: 7
+        }
+      ]
+    });
+
+    document.querySelectorAll('.reveal').forEach((el, idx) => {
+      setTimeout(() => el.classList.add('in'), 80 + idx * 90);
+    });
+
+    window.addEventListener('resize', () => {
+      nullChart.resize();
+      topicChart.resize();
+      numericChart.resize();
+    });
+  </script>
+</body>
+</html>
