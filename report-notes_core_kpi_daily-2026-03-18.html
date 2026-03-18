@@ -209,7 +209,7 @@
         <div>
           <p class="eyebrow">内容核心KPI日报</p>
           <h1>内容核心KPI日报（近30天）_2026-03-18</h1>
-          <p class="meta">任务ID：3e0b32f1-3305-41f9-98a7-49004e45fa35<br />JobID：notes_core_kpi_daily<br />数据来源：DMS DataService<br />生成时间：2026-03-18 22:46:59</p>
+          <p class="meta">任务ID：9fd157af-39bc-4b3e-b5d8-855a9dfcd44e<br />JobID：notes_core_kpi_daily<br />数据来源：DMS DataService<br />生成时间：2026-03-18 22:48:19</p>
         </div>
         <div class="score">
           <p class="v">40</p>
@@ -241,14 +241,14 @@
       <article class="signal">
         <div class="label"><span class="help-wrap help-down-left"><span>热门话题 / 创作者</span><button type="button" class="help-btn" title="分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。" aria-label="热门话题 / 创作者口径说明：分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。">?</button><span class="help-pop">分别取话题榜、创作者榜的 Top1（按 total_interactions 降序）。</span></span></div>
         <div class="value" style="color: var(--signal-green)">未挂话题</div>
-        <div class="desc">话题互动 22；创作者 -（互动 22）</div>
+        <div class="desc">话题互动 22；创作者 -（互动 -）</div>
       </article>
     </section>
 
 
     <section class="card reveal" style="border-color:#f59e0b;background:rgba(255,251,235,.88);">
       <h2>数据口径告警</h2>
-      <ul><li>子查询「受欢迎笔记Top榜（近30天）」失败：subQuery popular_notes_rank 结果字段不匹配，期望至少包含 [note_id, topic_name, total_interactions]，实际字段=[dt, avg_note_score, high_quality_ratio]</li><li>子查询「全局标签维度占比（高质量已审核发布笔记）」失败：subQuery global_tag_mix 结果字段不匹配，期望至少包含 [tag_type, tag_name, notes_ratio_pct]，实际字段=[user_id, notes_cnt, total_readings, total_interactions, interaction_rate_per_click]</li><li>未获取到受欢迎笔记榜单数据，Top笔记暂无法展示。</li></ul>
+      <ul><li>子查询「受欢迎笔记Top榜（近30天）」失败：subQuery popular_notes_rank 结果字段不匹配，缺少字段 [note_id, topic_name, total_interactions]，期望字段=[note_id, topic_name, total_interactions]，实际字段=[dt, avg_note_score, high_quality_ratio]</li><li>子查询「热门创作者Top榜（近30天）」失败：subQuery creator_popularity_rank 结果字段不匹配，缺少字段 [user_id]，期望字段=[user_id, total_interactions]，实际字段=[note_id, release_date, topic_name, click_num, like_num, comment_num, favorite_num, share_num, total_interactions, interaction_rate_per_click]</li><li>子查询「全局标签维度占比（高质量已审核发布笔记）」失败：subQuery global_tag_mix 结果字段不匹配，缺少字段 [tag_type, tag_name, notes_ratio_pct]，期望字段=[tag_type, tag_name, notes_ratio_pct]，实际字段=[user_id, notes_cnt, total_readings, total_interactions, interaction_rate_per_click]</li><li>未获取到受欢迎笔记榜单数据，Top笔记暂无法展示。</li><li>未获取到话题榜或创作者榜数据，热门话题/创作者暂无法完整展示。</li></ul>
     </section>
 
     <section class="card reveal">
@@ -285,16 +285,6 @@
 
     <section class="card reveal">
       <h2>热门话题Top榜（近30天）</h2>
-      <p style="margin:0 0 10px;color:#64748b;font-size:13px;">展示 20 行 / 共 50 行</p>
-      <div style="overflow:auto">
-        <table>
-          <thead><tr><th>笔记ID</th><th>发布日期</th><th>话题名称</th><th>点击数</th><th>点赞数</th><th>评论数</th><th>收藏数</th><th>分享数</th><th>总互动量</th><th>每点击互动率</th></tr></thead>
-          <tbody><tr><td>53393</td><td>2026-03-05</td><td>未挂话题</td><td>52</td><td>4</td><td>16</td><td>0</td><td>2</td><td>22</td><td>0.4231</td></tr><tr><td>53787</td><td>2026-03-10</td><td>未挂话题</td><td>56</td><td>12</td><td>3</td><td>0</td><td>0</td><td>15</td><td>0.2679</td></tr><tr><td>52672</td><td>2026-02-17</td><td>岁岁安康·过好年</td><td>79</td><td>7</td><td>5</td><td>0</td><td>1</td><td>13</td><td>0.1646</td></tr><tr><td>53293</td><td>2026-03-03</td><td>舌尖上的做饭家</td><td>37</td><td>10</td><td>3</td><td>0</td><td>0</td><td>13</td><td>0.3514</td></tr><tr><td>52996</td><td>2026-02-28</td><td>我与好慷的小确幸</td><td>26</td><td>10</td><td>1</td><td>1</td><td>1</td><td>13</td><td>0.5000</td></tr><tr><td>52923</td><td>2026-02-27</td><td>我想对客户说</td><td>69</td><td>7</td><td>0</td><td>2</td><td>3</td><td>12</td><td>0.1739</td></tr><tr><td>53547</td><td>2026-03-07</td><td>深度清洁大作战</td><td>59</td><td>8</td><td>0</td><td>0</td><td>4</td><td>12</td><td>0.2034</td></tr><tr><td>53001</td><td>2026-02-28</td><td>每天一个小技巧</td><td>75</td><td>7</td><td>0</td><td>3</td><td>1</td><td>11</td><td>0.1467</td></tr><tr><td>52977</td><td>2026-02-28</td><td>未挂话题</td><td>68</td><td>6</td><td>0</td><td>1</td><td>4</td><td>11</td><td>0.1618</td></tr><tr><td>52919</td><td>2026-02-27</td><td>我想对客户说</td><td>65</td><td>8</td><td>0</td><td>2</td><td>0</td><td>10</td><td>0.1538</td></tr><tr><td>53357</td><td>2026-03-05</td><td>每天一个小技巧</td><td>61</td><td>9</td><td>0</td><td>1</td><td>0</td><td>10</td><td>0.1639</td></tr><tr><td>53821</td><td>2026-03-11</td><td>未挂话题</td><td>22</td><td>10</td><td>0</td><td>0</td><td>0</td><td>10</td><td>0.4545</td></tr><tr><td>52787</td><td>2026-02-24</td><td>岁岁安康·过好年</td><td>226</td><td>7</td><td>1</td><td>0</td><td>1</td><td>9</td><td>0.0398</td></tr><tr><td>52792</td><td>2026-02-24</td><td>未挂话题</td><td>76</td><td>5</td><td>0</td><td>1</td><td>3</td><td>9</td><td>0.1184</td></tr><tr><td>53312</td><td>2026-03-04</td><td>舌尖上的做饭家</td><td>42</td><td>7</td><td>0</td><td>1</td><td>1</td><td>9</td><td>0.2143</td></tr><tr><td>53075</td><td>2026-03-01</td><td>每天一个小技巧</td><td>42</td><td>6</td><td>1</td><td>0</td><td>1</td><td>8</td><td>0.1905</td></tr><tr><td>53561</td><td>2026-03-07</td><td>211本分保姆</td><td>17</td><td>5</td><td>3</td><td>0</td><td>0</td><td>8</td><td>0.4706</td></tr><tr><td>52903</td><td>2026-02-27</td><td>未挂话题</td><td>105</td><td>4</td><td>0</td><td>2</td><td>1</td><td>7</td><td>0.0667</td></tr><tr><td>53811</td><td>2026-03-11</td><td>“治愈”的收纳</td><td>61</td><td>5</td><td>2</td><td>0</td><td>0</td><td>7</td><td>0.1148</td></tr><tr><td>52956</td><td>2026-02-27</td><td>舌尖上的做饭家</td><td>45</td><td>3</td><td>3</td><td>0</td><td>1</td><td>7</td><td>0.1556</td></tr></tbody>
-        </table>
-      </div>
-    </section>
-    <section class="card reveal">
-      <h2>热门创作者Top榜（近30天）</h2>
       <p style="margin:0 0 10px;color:#64748b;font-size:13px;">展示 20 行 / 共 50 行</p>
       <div style="overflow:auto">
         <table>
