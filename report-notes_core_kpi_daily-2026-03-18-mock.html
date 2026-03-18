@@ -149,7 +149,7 @@
         <div>
           <p class="eyebrow">内容核心KPI日报</p>
           <h1>内容核心KPI日报（近30天）_2026-03-18</h1>
-          <p class="meta">任务ID：e06a05f6-2595-401c-bd4c-8ad1791431ec<br />JobID：notes_core_kpi_daily<br />数据来源：模拟数据<br />生成时间：2026-03-18 20:50:03</p>
+          <p class="meta">任务ID：426a3dcf-fecf-4801-89a9-333217ae9f6f<br />JobID：notes_core_kpi_daily<br />数据来源：模拟数据<br />生成时间：2026-03-18 20:59:08</p>
         </div>
         <div class="score">
           <p class="v">100</p>
@@ -163,6 +163,7 @@
         <div class="metric"><div class="label">重复率</div><div class="value">0.00%</div></div>
         <div class="metric"><div class="label">平均空值率</div><div class="value">0.00%</div></div>
         <div class="metric"><div class="label">数值字段数</div><div class="value">7</div></div>
+        <div class="metric"><div class="label">笔记质量分</div><div class="value">-</div></div>
       </div>
     </section>
 
@@ -211,8 +212,14 @@
       </div>
       <div class="charts wide">
         <div id="chart-numeric" class="chart"></div>
+        <div id="chart-quality" class="chart"></div>
+      </div>
+      <div class="charts wide">
+        <div id="chart-engagement" class="chart"></div>
       </div>
     </section>
+
+
 
     <section class="card reveal">
       <h2>明细数据（全部40行）</h2>
@@ -225,7 +232,7 @@
     </section>
   </main>
   <script>
-    const data = {"nullTop":[{"field":"note_id","label":"笔记ID","ratio":0},{"field":"topic_name","label":"话题名称","ratio":0},{"field":"channel","label":"渠道","ratio":0},{"field":"release_time","label":"发布时间","ratio":0},{"field":"click_num","label":"点击数","ratio":0},{"field":"like_num","label":"点赞数","ratio":0},{"field":"comment_num","label":"评论数","ratio":0},{"field":"favorite_num","label":"收藏数","ratio":0}],"topicTop":[{"field":"channel","label":"渠道","top":"推荐","ratio":35},{"field":"topic_name","label":"话题名称","top":"家电清洗","ratio":20}],"numericTop":[{"field":"note_id","label":"笔记ID","avg":900019.5,"p95":900037,"max":900039},{"field":"click_num","label":"点击数","avg":241.5,"p95":375,"max":392},{"field":"like_num","label":"点赞数","avg":46.5,"p95":74,"max":77},{"field":"favorite_num","label":"收藏数","avg":22.5,"p95":39,"max":39},{"field":"comment_num","label":"评论数","avg":16.35,"p95":28,"max":29},{"field":"share_num","label":"分享数","avg":8.35,"p95":15,"max":15},{"field":"interaction_rate","label":"互动率","avg":0.43,"p95":0.84,"max":0.93}]};
+    const data = {"nullTop":[{"field":"note_id","label":"笔记ID","ratio":0},{"field":"topic_name","label":"话题名称","ratio":0},{"field":"channel","label":"渠道","ratio":0},{"field":"release_time","label":"发布时间","ratio":0},{"field":"click_num","label":"点击数","ratio":0},{"field":"like_num","label":"点赞数","ratio":0},{"field":"comment_num","label":"评论数","ratio":0},{"field":"favorite_num","label":"收藏数","ratio":0}],"topicTop":[{"field":"channel","label":"渠道","top":"推荐","ratio":35},{"field":"topic_name","label":"话题名称","top":"家电清洗","ratio":20}],"numericTop":[{"field":"note_id","label":"笔记ID","avg":900019.5,"p95":900037,"max":900039},{"field":"click_num","label":"点击数","avg":241.5,"p95":375,"max":392},{"field":"like_num","label":"点赞数","avg":46.5,"p95":74,"max":77},{"field":"favorite_num","label":"收藏数","avg":22.5,"p95":39,"max":39},{"field":"comment_num","label":"评论数","avg":16.35,"p95":28,"max":29},{"field":"share_num","label":"分享数","avg":8.35,"p95":15,"max":15},{"field":"interaction_rate","label":"互动率","avg":0.43,"p95":0.84,"max":0.93}],"qualityTrend":[],"qualityFieldLabel":"笔记质量分","engagementTrend":[]};
     const nullChart = echarts.init(document.getElementById('chart-null'));
     nullChart.setOption({
       title: { text: '空值率高风险字段', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
@@ -299,6 +306,75 @@
       ]
     });
 
+    const qualityChart = echarts.init(document.getElementById('chart-quality'));
+    if (data.qualityTrend.length > 0) {
+      qualityChart.setOption({
+        title: { text: (data.qualityFieldLabel || '笔记质量分') + '（100分制）趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 18, top: 60, bottom: 64 },
+        xAxis: { type: 'category', data: data.qualityTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+        yAxis: { type: 'value', min: 0, max: 100, axisLabel: { color: '#334155' } },
+        series: [{
+          name: '质量分',
+          type: 'line',
+          smooth: true,
+          data: data.qualityTrend.map(x => x.score),
+          lineStyle: { width: 3, color: '#16a34a' },
+          areaStyle: { color: 'rgba(34, 197, 94, 0.15)' },
+          symbolSize: 6
+        }]
+      });
+    } else {
+      qualityChart.setOption({
+        title: { text: '笔记质量分趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用质量分数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
+    const engagementChart = echarts.init(document.getElementById('chart-engagement'));
+    if (data.engagementTrend.length > 0) {
+      engagementChart.setOption({
+        title: { text: '每日互动与阅读量趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 22, top: 66, bottom: 64 },
+        xAxis: { type: 'category', data: data.engagementTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+        yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+        series: [
+          {
+            name: '阅读量',
+            type: 'bar',
+            barMaxWidth: 22,
+            data: data.engagementTrend.map(x => x.readings),
+            itemStyle: { color: '#0ea5e9', borderRadius: [8, 8, 0, 0] }
+          },
+          {
+            name: '互动量',
+            type: 'line',
+            smooth: true,
+            data: data.engagementTrend.map(x => x.interactions),
+            lineStyle: { width: 2.5, color: '#f97316' },
+            symbolSize: 7
+          }
+        ]
+      });
+    } else {
+      engagementChart.setOption({
+        title: { text: '每日互动与阅读量趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用互动/阅读数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
     document.querySelectorAll('.reveal').forEach((el, idx) => {
       setTimeout(() => el.classList.add('in'), 80 + idx * 90);
     });
@@ -307,6 +383,8 @@
       nullChart.resize();
       topicChart.resize();
       numericChart.resize();
+      qualityChart.resize();
+      engagementChart.resize();
     });
   </script>
 </body>
