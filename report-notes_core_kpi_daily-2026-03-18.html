@@ -63,13 +63,13 @@
       text-align: center;
       backdrop-filter: blur(3px);
     }
-    .score .v { margin: 0; font-size: 38px; line-height: 1; font-weight: 700; color: #16a34a; text-shadow: 0 0 8px rgba(255, 255, 255, 0.15); }
+    .score .v { margin: 0; font-size: 38px; line-height: 1; font-weight: 700; color: #dc2626; text-shadow: 0 0 8px rgba(255, 255, 255, 0.15); }
     .score .l { margin: 6px 0 0; font-size: 13px; color: #e2e8f0; }
     .score .tag { margin: 4px 0 0; font-size: 11px; color: #bae6fd; }
     .metric-grid {
       margin-top: 16px;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
     .metric {
@@ -147,40 +147,41 @@
     <section class="hero reveal">
       <div class="hero-head">
         <div>
-          <p class="eyebrow">Content KPI Daily</p>
+          <p class="eyebrow">内容核心KPI日报</p>
           <h1>内容核心KPI日报（近30天）_2026-03-18</h1>
-          <p class="meta">任务ID：d868b7c5-2c86-48ca-9220-b31a949b63d6<br />JobID：notes_core_kpi_daily<br />生成时间：2026-03-18 21:30:44</p>
+          <p class="meta">任务ID：c1ea8d87-44f1-443d-af15-e61edac8b1db<br />JobID：notes_core_kpi_daily<br />数据来源：DMS DataService<br />生成时间：2026-03-18 21:45:04</p>
         </div>
         <div class="score">
-          <p class="v">100</p>
-          <p class="l">数据健康分</p>
-          <p class="tag">健康</p>
+          <p class="v">59</p>
+          <p class="l">运营健康分</p>
+          <p class="tag">预警</p>
         </div>
       </div>
       <div class="metric-grid">
-        <div class="metric"><div class="label">总行数</div><div class="value">31</div></div>
-        <div class="metric"><div class="label">总列数</div><div class="value">10</div></div>
-        <div class="metric"><div class="label">重复率</div><div class="value">0.00%</div></div>
-        <div class="metric"><div class="label">平均空值率</div><div class="value">0.00%</div></div>
-        <div class="metric"><div class="label">数值字段数</div><div class="value">9</div></div>
+        <div class="metric"><div class="label">31天发布笔记总数</div><div class="value">1,806</div></div>
+        <div class="metric"><div class="label">31天总阅读量</div><div class="value">9,790</div></div>
+        <div class="metric"><div class="label">31天总互动量</div><div class="value">0</div></div>
+        <div class="metric"><div class="label">最新日质量分</div><div class="value">-</div></div>
+        <div class="metric"><div class="label">最新日高质占比</div><div class="value">-</div></div>
+        <div class="metric"><div class="label">31天整体互动率</div><div class="value">0.00%</div></div>
       </div>
     </section>
 
     <section class="signal-grid reveal">
       <article class="signal">
-        <div class="label">最高风险字段（空值）</div>
-        <div class="value" style="color: var(--signal-red)">dt</div>
-        <div class="desc">空值率 0.00%</div>
+        <div class="label">最新日发文趋势（2026-03-18）</div>
+        <div class="value" style="color: var(--signal-red)">-28.2%</div>
+        <div class="desc">阅读量日环比 -32.9%</div>
       </article>
       <article class="signal">
-        <div class="label">内容分发集中度</div>
+        <div class="label">受欢迎笔记（近30天）</div>
         <div class="value" style="color: var(--signal-orange)">-</div>
-        <div class="desc">Top1 值 -，占比 0.00%</div>
+        <div class="desc">互动 -，阅读 -</div>
       </article>
       <article class="signal">
-        <div class="label">峰值最高数值指标</div>
-        <div class="value" style="color: var(--signal-green)">published_notes</div>
-        <div class="desc">最大值 103.00</div>
+        <div class="label">热门话题 / 创作者</div>
+        <div class="value" style="color: var(--signal-green)">-</div>
+        <div class="desc">话题互动 -；创作者 -（互动 -）</div>
       </article>
     </section>
 
@@ -192,11 +193,11 @@
           <h3>管理层摘要</h3>
           <p>本次数据质量总体可用，建议先明确关键字段业务含义，再开展指标口径分析。</p>
           <h3>核心发现</h3>
-          <ul><li>数据总行数 31，总列数 10</li><li>重复率 0%</li></ul>
+          <ul><li>数据总行数 31，总列数 28</li><li>重复率 0%</li></ul>
         </div>
         <div class="summary-box">
           <h3>行动建议</h3>
-          <ul><li>核心质量指标整体稳定，建议继续跟踪头部类别占比和高空值字段。</li></ul>
+          <ul><li>核心业务指标整体稳定，建议持续跟踪高质量占比与互动率的周趋势。</li></ul>
           <h3>业务解读</h3>
           <ul><li>字段业务语义未提供，业务解读存在不确定性。</li><li>存在时间字段，可进一步做按日/周趋势分析（需确认字段含义）。</li></ul>
         </div>
@@ -206,107 +207,238 @@
     <section class="card reveal">
       <h2>数据图表</h2>
       <div class="charts">
-        <div id="chart-null" class="chart"></div>
-        <div id="chart-topic" class="chart"></div>
+        <div id="chart-publish" class="chart"></div>
+        <div id="chart-type" class="chart"></div>
       </div>
       <div class="charts wide">
-        <div id="chart-numeric" class="chart"></div>
+        <div id="chart-quality" class="chart"></div>
+        <div id="chart-engagement" class="chart"></div>
+      </div>
+    </section>
+
+
+    <section class="card reveal">
+      <h2>受欢迎笔记Top榜（近30天）</h2>
+      <p style="margin:0 0 10px;color:#64748b;font-size:13px;">展示 30 行 / 共 31 行</p>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th><th>平均评论</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>74</td><td>63</td><td>0</td><td>65</td><td>9</td><td>1.57</td><td>0.16</td><td>0.00</td><td>0.1034</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td><td>0.01</td><td>0.1156</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td><td>0.05</td><td>0.1408</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td><td>0.06</td><td>0.0957</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td><td>0.00</td><td>0.2424</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td><td>0.03</td><td>0.1418</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td><td>0.05</td><td>0.1538</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td><td>0.05</td><td>0.2170</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td><td>0.05</td><td>0.2374</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td><td>0.06</td><td>0.1621</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td><td>0.02</td><td>0.1742</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td><td>0.04</td><td>0.2500</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.44</td><td>0.67</td><td>0.11</td><td>0.1761</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.72</td><td>0.77</td><td>0.21</td><td>0.1565</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td><td>0.04</td><td>0.1741</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.85</td><td>0.60</td><td>0.04</td><td>0.1688</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td><td>0.01</td><td>0.0854</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td><td>0.03</td><td>0.1210</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td><td>0.03</td><td>0.1030</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td><td>0.10</td><td>0.0973</td></tr><tr><td>2026-02-26</td><td>43</td><td>35</td><td>0</td><td>39</td><td>4</td><td>7.21</td><td>0.77</td><td>0.00</td><td>0.1097</td></tr><tr><td>2026-02-25</td><td>30</td><td>27</td><td>0</td><td>30</td><td>0</td><td>9.00</td><td>0.90</td><td>0.07</td><td>0.1185</td></tr><tr><td>2026-02-24</td><td>37</td><td>34</td><td>0</td><td>32</td><td>5</td><td>20.38</td><td>0.89</td><td>0.05</td><td>0.0544</td></tr><tr><td>2026-02-23</td><td>21</td><td>19</td><td>0</td><td>20</td><td>1</td><td>4.57</td><td>0.38</td><td>0.05</td><td>0.1250</td></tr><tr><td>2026-02-22</td><td>14</td><td>13</td><td>0</td><td>12</td><td>2</td><td>14.21</td><td>0.93</td><td>0.00</td><td>0.0704</td></tr><tr><td>2026-02-21</td><td>5</td><td>5</td><td>0</td><td>5</td><td>0</td><td>4.40</td><td>0.80</td><td>0.20</td><td>0.2273</td></tr><tr><td>2026-02-20</td><td>19</td><td>18</td><td>0</td><td>17</td><td>2</td><td>6.79</td><td>0.68</td><td>0.11</td><td>0.1240</td></tr><tr><td>2026-02-19</td><td>16</td><td>13</td><td>0</td><td>16</td><td>0</td><td>3.63</td><td>0.31</td><td>0.00</td><td>0.0862</td></tr><tr><td>2026-02-18</td><td>19</td><td>17</td><td>0</td><td>18</td><td>1</td><td>11.84</td><td>0.84</td><td>0.00</td><td>0.0711</td></tr><tr><td>2026-02-17</td><td>33</td><td>28</td><td>0</td><td>29</td><td>4</td><td>11.00</td><td>1.03</td><td>0.15</td><td>0.1129</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>热门话题Top榜（近30天）</h2>
+      <p style="margin:0 0 10px;color:#64748b;font-size:13px;">展示 20 行 / 共 31 行</p>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th><th>平均评论</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>74</td><td>63</td><td>0</td><td>65</td><td>9</td><td>1.57</td><td>0.16</td><td>0.00</td><td>0.1034</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td><td>0.01</td><td>0.1156</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td><td>0.05</td><td>0.1408</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td><td>0.06</td><td>0.0957</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td><td>0.00</td><td>0.2424</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td><td>0.03</td><td>0.1418</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td><td>0.05</td><td>0.1538</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td><td>0.05</td><td>0.2170</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td><td>0.05</td><td>0.2374</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td><td>0.06</td><td>0.1621</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td><td>0.02</td><td>0.1742</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td><td>0.04</td><td>0.2500</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.44</td><td>0.67</td><td>0.11</td><td>0.1761</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.72</td><td>0.77</td><td>0.21</td><td>0.1565</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td><td>0.04</td><td>0.1741</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.85</td><td>0.60</td><td>0.04</td><td>0.1688</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td><td>0.01</td><td>0.0854</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td><td>0.03</td><td>0.1210</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td><td>0.03</td><td>0.1030</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td><td>0.10</td><td>0.0973</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>热门创作者Top榜（近30天）</h2>
+      <p style="margin:0 0 10px;color:#64748b;font-size:13px;">展示 20 行 / 共 31 行</p>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th><th>平均评论</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>74</td><td>63</td><td>0</td><td>65</td><td>9</td><td>1.57</td><td>0.16</td><td>0.00</td><td>0.1034</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td><td>0.01</td><td>0.1156</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td><td>0.05</td><td>0.1408</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td><td>0.06</td><td>0.0957</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td><td>0.00</td><td>0.2424</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td><td>0.03</td><td>0.1418</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td><td>0.05</td><td>0.1538</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td><td>0.05</td><td>0.2170</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td><td>0.05</td><td>0.2374</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td><td>0.06</td><td>0.1621</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td><td>0.02</td><td>0.1742</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td><td>0.04</td><td>0.2500</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.44</td><td>0.67</td><td>0.11</td><td>0.1761</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.72</td><td>0.77</td><td>0.21</td><td>0.1565</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td><td>0.04</td><td>0.1741</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.85</td><td>0.60</td><td>0.04</td><td>0.1688</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td><td>0.01</td><td>0.0854</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td><td>0.03</td><td>0.1210</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td><td>0.03</td><td>0.1030</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td><td>0.10</td><td>0.0973</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card reveal">
+      <h2>全局标签维度占比（高质量已审核发布笔记）</h2>
+      <p style="margin:0 0 10px;color:#64748b;font-size:13px;">共 31 行</p>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th><th>平均评论</th><th>每点击互动率</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>74</td><td>63</td><td>0</td><td>65</td><td>9</td><td>1.57</td><td>0.16</td><td>0.00</td><td>0.1034</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td><td>0.01</td><td>0.1156</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td><td>0.05</td><td>0.1408</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td><td>0.06</td><td>0.0957</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td><td>0.00</td><td>0.2424</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td><td>0.03</td><td>0.1418</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td><td>0.05</td><td>0.1538</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td><td>0.05</td><td>0.2170</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td><td>0.05</td><td>0.2374</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td><td>0.06</td><td>0.1621</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td><td>0.02</td><td>0.1742</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td><td>0.04</td><td>0.2500</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.44</td><td>0.67</td><td>0.11</td><td>0.1761</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.72</td><td>0.77</td><td>0.21</td><td>0.1565</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td><td>0.04</td><td>0.1741</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.85</td><td>0.60</td><td>0.04</td><td>0.1688</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td><td>0.01</td><td>0.0854</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td><td>0.03</td><td>0.1210</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td><td>0.03</td><td>0.1030</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td><td>0.10</td><td>0.0973</td></tr><tr><td>2026-02-26</td><td>43</td><td>35</td><td>0</td><td>39</td><td>4</td><td>7.21</td><td>0.77</td><td>0.00</td><td>0.1097</td></tr><tr><td>2026-02-25</td><td>30</td><td>27</td><td>0</td><td>30</td><td>0</td><td>9.00</td><td>0.90</td><td>0.07</td><td>0.1185</td></tr><tr><td>2026-02-24</td><td>37</td><td>34</td><td>0</td><td>32</td><td>5</td><td>20.38</td><td>0.89</td><td>0.05</td><td>0.0544</td></tr><tr><td>2026-02-23</td><td>21</td><td>19</td><td>0</td><td>20</td><td>1</td><td>4.57</td><td>0.38</td><td>0.05</td><td>0.1250</td></tr><tr><td>2026-02-22</td><td>14</td><td>13</td><td>0</td><td>12</td><td>2</td><td>14.21</td><td>0.93</td><td>0.00</td><td>0.0704</td></tr><tr><td>2026-02-21</td><td>5</td><td>5</td><td>0</td><td>5</td><td>0</td><td>4.40</td><td>0.80</td><td>0.20</td><td>0.2273</td></tr><tr><td>2026-02-20</td><td>19</td><td>18</td><td>0</td><td>17</td><td>2</td><td>6.79</td><td>0.68</td><td>0.11</td><td>0.1240</td></tr><tr><td>2026-02-19</td><td>16</td><td>13</td><td>0</td><td>16</td><td>0</td><td>3.63</td><td>0.31</td><td>0.00</td><td>0.0862</td></tr><tr><td>2026-02-18</td><td>19</td><td>17</td><td>0</td><td>18</td><td>1</td><td>11.84</td><td>0.84</td><td>0.00</td><td>0.0711</td></tr><tr><td>2026-02-17</td><td>33</td><td>28</td><td>0</td><td>29</td><td>4</td><td>11.00</td><td>1.03</td><td>0.15</td><td>0.1129</td></tr><tr><td>2026-02-16</td><td>72</td><td>61</td><td>0</td><td>63</td><td>9</td><td>5.46</td><td>0.74</td><td>0.00</td><td>0.1349</td></tr></tbody>
+        </table>
       </div>
     </section>
 
     <section class="card reveal">
-      <h2>样本数据（前10行）</h2>
+      <h2>明细数据（全部31行）</h2>
       <div style="overflow:auto">
         <table>
-          <thead><tr><th>dt</th><th>published_notes</th><th>active_authors</th><th>text_notes</th><th>image_notes</th><th>video_notes</th><th>avg_click</th><th>avg_like</th></tr></thead>
-          <tbody><tr><td>2026-03-18</td><td>72</td><td>62</td><td>0</td><td>63</td><td>9</td><td>1.61</td><td>0.17</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td></tr></tbody>
+          <thead><tr><th>日期</th><th>发布笔记数</th><th>活跃创作者数</th><th>文字笔记数</th><th>图文笔记数</th><th>视频笔记数</th><th>平均点击</th><th>平均点赞</th></tr></thead>
+          <tbody><tr><td>2026-03-18</td><td>74</td><td>63</td><td>0</td><td>65</td><td>9</td><td>1.57</td><td>0.16</td></tr><tr><td>2026-03-17</td><td>103</td><td>66</td><td>0</td><td>94</td><td>9</td><td>1.68</td><td>0.17</td></tr><tr><td>2026-03-16</td><td>73</td><td>63</td><td>0</td><td>69</td><td>4</td><td>2.92</td><td>0.36</td></tr><tr><td>2026-03-15</td><td>83</td><td>59</td><td>0</td><td>77</td><td>6</td><td>2.77</td><td>0.20</td></tr><tr><td>2026-03-14</td><td>58</td><td>51</td><td>0</td><td>53</td><td>5</td><td>2.84</td><td>0.67</td></tr><tr><td>2026-03-13</td><td>70</td><td>57</td><td>0</td><td>65</td><td>5</td><td>3.73</td><td>0.50</td></tr><tr><td>2026-03-12</td><td>94</td><td>72</td><td>0</td><td>93</td><td>1</td><td>2.77</td><td>0.34</td></tr><tr><td>2026-03-11</td><td>76</td><td>61</td><td>0</td><td>72</td><td>4</td><td>4.49</td><td>0.88</td></tr><tr><td>2026-03-10</td><td>59</td><td>50</td><td>0</td><td>58</td><td>1</td><td>3.71</td><td>0.81</td></tr><tr><td>2026-03-09</td><td>69</td><td>59</td><td>0</td><td>69</td><td>0</td><td>4.20</td><td>0.57</td></tr><tr><td>2026-03-08</td><td>84</td><td>58</td><td>0</td><td>83</td><td>1</td><td>4.71</td><td>0.73</td></tr><tr><td>2026-03-07</td><td>71</td><td>52</td><td>0</td><td>69</td><td>2</td><td>3.66</td><td>0.80</td></tr><tr><td>2026-03-06</td><td>64</td><td>61</td><td>0</td><td>62</td><td>2</td><td>4.44</td><td>0.67</td></tr><tr><td>2026-03-05</td><td>78</td><td>66</td><td>0</td><td>77</td><td>1</td><td>6.72</td><td>0.77</td></tr><tr><td>2026-03-04</td><td>55</td><td>49</td><td>0</td><td>52</td><td>3</td><td>5.75</td><td>0.91</td></tr><tr><td>2026-03-03</td><td>80</td><td>64</td><td>0</td><td>76</td><td>4</td><td>3.85</td><td>0.60</td></tr><tr><td>2026-03-02</td><td>101</td><td>78</td><td>0</td><td>101</td><td>0</td><td>6.38</td><td>0.52</td></tr><tr><td>2026-03-01</td><td>79</td><td>60</td><td>0</td><td>74</td><td>5</td><td>5.96</td><td>0.65</td></tr><tr><td>2026-02-28</td><td>66</td><td>51</td><td>0</td><td>63</td><td>3</td><td>11.03</td><td>0.92</td></tr><tr><td>2026-02-27</td><td>60</td><td>52</td><td>0</td><td>59</td><td>1</td><td>12.85</td><td>0.97</td></tr><tr><td>2026-02-26</td><td>43</td><td>35</td><td>0</td><td>39</td><td>4</td><td>7.21</td><td>0.77</td></tr><tr><td>2026-02-25</td><td>30</td><td>27</td><td>0</td><td>30</td><td>0</td><td>9.00</td><td>0.90</td></tr><tr><td>2026-02-24</td><td>37</td><td>34</td><td>0</td><td>32</td><td>5</td><td>20.38</td><td>0.89</td></tr><tr><td>2026-02-23</td><td>21</td><td>19</td><td>0</td><td>20</td><td>1</td><td>4.57</td><td>0.38</td></tr><tr><td>2026-02-22</td><td>14</td><td>13</td><td>0</td><td>12</td><td>2</td><td>14.21</td><td>0.93</td></tr><tr><td>2026-02-21</td><td>5</td><td>5</td><td>0</td><td>5</td><td>0</td><td>4.40</td><td>0.80</td></tr><tr><td>2026-02-20</td><td>19</td><td>18</td><td>0</td><td>17</td><td>2</td><td>6.79</td><td>0.68</td></tr><tr><td>2026-02-19</td><td>16</td><td>13</td><td>0</td><td>16</td><td>0</td><td>3.63</td><td>0.31</td></tr><tr><td>2026-02-18</td><td>19</td><td>17</td><td>0</td><td>18</td><td>1</td><td>11.84</td><td>0.84</td></tr><tr><td>2026-02-17</td><td>33</td><td>28</td><td>0</td><td>29</td><td>4</td><td>11.00</td><td>1.03</td></tr><tr><td>2026-02-16</td><td>72</td><td>61</td><td>0</td><td>63</td><td>9</td><td>5.46</td><td>0.74</td></tr></tbody>
         </table>
       </div>
     </section>
   </main>
   <script>
-    const data = {"nullTop":[{"field":"dt","ratio":0},{"field":"published_notes","ratio":0},{"field":"active_authors","ratio":0},{"field":"text_notes","ratio":0},{"field":"image_notes","ratio":0},{"field":"video_notes","ratio":0},{"field":"avg_click","ratio":0},{"field":"avg_like","ratio":0}],"topicTop":[],"numericTop":[{"field":"published_notes","avg":58.19,"p95":94,"max":103},{"field":"image_notes","avg":55.16,"p95":93,"max":101},{"field":"active_authors","avg":47.13,"p95":66,"max":78},{"field":"avg_click","avg":6.27,"p95":12.82,"max":20.38},{"field":"video_notes","avg":3.03,"p95":9,"max":9},{"field":"avg_like","avg":0.66,"p95":0.93,"max":1.03},{"field":"interaction_rate_per_click","avg":0.14,"p95":0.24,"max":0.25},{"field":"avg_comment","avg":0.05,"p95":0.15,"max":0.21}]};
-    const nullChart = echarts.init(document.getElementById('chart-null'));
-    nullChart.setOption({
-      title: { text: '空值率高风险字段', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
-      tooltip: { trigger: 'axis' },
-      grid: { left: 48, right: 16, top: 56, bottom: 64 },
-      xAxis: { type: 'category', data: data.nullTop.map(x => x.field), axisLabel: { rotate: 28, color: '#334155' } },
-      yAxis: { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } },
-      series: [{
-        type: 'bar',
-        data: data.nullTop.map(x => x.ratio),
-        barMaxWidth: 22,
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#ef4444' },
-            { offset: 1, color: '#fca5a5' }
-          ]),
-          borderRadius: [8, 8, 0, 0]
-        }
-      }]
-    });
-
-    const topicChart = echarts.init(document.getElementById('chart-topic'));
-    topicChart.setOption({
-      title: { text: '类别字段集中度（Top1）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
-      tooltip: { trigger: 'axis' },
-      grid: { left: 48, right: 16, top: 56, bottom: 64 },
-      xAxis: { type: 'category', data: data.topicTop.map(x => x.field), axisLabel: { rotate: 28, color: '#334155' } },
-      yAxis: { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } },
-      series: [{
-        type: 'line',
-        smooth: true,
-        areaStyle: { color: 'rgba(14, 165, 233, 0.15)' },
-        lineStyle: { width: 3, color: '#0284c7' },
-        symbolSize: 8,
-        data: data.topicTop.map(x => x.ratio)
-      }]
-    });
-
-    const numericChart = echarts.init(document.getElementById('chart-numeric'));
-    numericChart.setOption({
-      title: { text: '数值字段统计（avg / p95 / max）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+    const data = {"publishTrend":[{"dt":"2026-02-16","published":72,"active":61},{"dt":"2026-02-17","published":33,"active":28},{"dt":"2026-02-18","published":19,"active":17},{"dt":"2026-02-19","published":16,"active":13},{"dt":"2026-02-20","published":19,"active":18},{"dt":"2026-02-21","published":5,"active":5},{"dt":"2026-02-22","published":14,"active":13},{"dt":"2026-02-23","published":21,"active":19},{"dt":"2026-02-24","published":37,"active":34},{"dt":"2026-02-25","published":30,"active":27},{"dt":"2026-02-26","published":43,"active":35},{"dt":"2026-02-27","published":60,"active":52},{"dt":"2026-02-28","published":66,"active":51},{"dt":"2026-03-01","published":79,"active":60},{"dt":"2026-03-02","published":101,"active":78},{"dt":"2026-03-03","published":80,"active":64},{"dt":"2026-03-04","published":55,"active":49},{"dt":"2026-03-05","published":78,"active":66},{"dt":"2026-03-06","published":64,"active":61},{"dt":"2026-03-07","published":71,"active":52},{"dt":"2026-03-08","published":84,"active":58},{"dt":"2026-03-09","published":69,"active":59},{"dt":"2026-03-10","published":59,"active":50},{"dt":"2026-03-11","published":76,"active":61},{"dt":"2026-03-12","published":94,"active":72},{"dt":"2026-03-13","published":70,"active":57},{"dt":"2026-03-14","published":58,"active":51},{"dt":"2026-03-15","published":83,"active":59},{"dt":"2026-03-16","published":73,"active":63},{"dt":"2026-03-17","published":103,"active":66},{"dt":"2026-03-18","published":74,"active":63}],"typeTrend":[{"dt":"2026-02-16","text":0,"image":63,"video":9},{"dt":"2026-02-17","text":0,"image":29,"video":4},{"dt":"2026-02-18","text":0,"image":18,"video":1},{"dt":"2026-02-19","text":0,"image":16,"video":0},{"dt":"2026-02-20","text":0,"image":17,"video":2},{"dt":"2026-02-21","text":0,"image":5,"video":0},{"dt":"2026-02-22","text":0,"image":12,"video":2},{"dt":"2026-02-23","text":0,"image":20,"video":1},{"dt":"2026-02-24","text":0,"image":32,"video":5},{"dt":"2026-02-25","text":0,"image":30,"video":0},{"dt":"2026-02-26","text":0,"image":39,"video":4},{"dt":"2026-02-27","text":0,"image":59,"video":1},{"dt":"2026-02-28","text":0,"image":63,"video":3},{"dt":"2026-03-01","text":0,"image":74,"video":5},{"dt":"2026-03-02","text":0,"image":101,"video":0},{"dt":"2026-03-03","text":0,"image":76,"video":4},{"dt":"2026-03-04","text":0,"image":52,"video":3},{"dt":"2026-03-05","text":0,"image":77,"video":1},{"dt":"2026-03-06","text":0,"image":62,"video":2},{"dt":"2026-03-07","text":0,"image":69,"video":2},{"dt":"2026-03-08","text":0,"image":83,"video":1},{"dt":"2026-03-09","text":0,"image":69,"video":0},{"dt":"2026-03-10","text":0,"image":58,"video":1},{"dt":"2026-03-11","text":0,"image":72,"video":4},{"dt":"2026-03-12","text":0,"image":93,"video":1},{"dt":"2026-03-13","text":0,"image":65,"video":5},{"dt":"2026-03-14","text":0,"image":53,"video":5},{"dt":"2026-03-15","text":0,"image":77,"video":6},{"dt":"2026-03-16","text":0,"image":69,"video":4},{"dt":"2026-03-17","text":0,"image":94,"video":9},{"dt":"2026-03-18","text":0,"image":65,"video":9}],"qualityTrend":[{"dt":"2026-02-16","score":null},{"dt":"2026-02-17","score":null},{"dt":"2026-02-18","score":null},{"dt":"2026-02-19","score":null},{"dt":"2026-02-20","score":null},{"dt":"2026-02-21","score":null},{"dt":"2026-02-22","score":null},{"dt":"2026-02-23","score":null},{"dt":"2026-02-24","score":null},{"dt":"2026-02-25","score":null},{"dt":"2026-02-26","score":null},{"dt":"2026-02-27","score":null},{"dt":"2026-02-28","score":null},{"dt":"2026-03-01","score":null},{"dt":"2026-03-02","score":null},{"dt":"2026-03-03","score":null},{"dt":"2026-03-04","score":null},{"dt":"2026-03-05","score":null},{"dt":"2026-03-06","score":null},{"dt":"2026-03-07","score":null},{"dt":"2026-03-08","score":null},{"dt":"2026-03-09","score":null},{"dt":"2026-03-10","score":null},{"dt":"2026-03-11","score":null},{"dt":"2026-03-12","score":null},{"dt":"2026-03-13","score":null},{"dt":"2026-03-14","score":null},{"dt":"2026-03-15","score":null},{"dt":"2026-03-16","score":null},{"dt":"2026-03-17","score":null},{"dt":"2026-03-18","score":null}],"highQualityTrend":[{"dt":"2026-02-16","ratio":null},{"dt":"2026-02-17","ratio":null},{"dt":"2026-02-18","ratio":null},{"dt":"2026-02-19","ratio":null},{"dt":"2026-02-20","ratio":null},{"dt":"2026-02-21","ratio":null},{"dt":"2026-02-22","ratio":null},{"dt":"2026-02-23","ratio":null},{"dt":"2026-02-24","ratio":null},{"dt":"2026-02-25","ratio":null},{"dt":"2026-02-26","ratio":null},{"dt":"2026-02-27","ratio":null},{"dt":"2026-02-28","ratio":null},{"dt":"2026-03-01","ratio":null},{"dt":"2026-03-02","ratio":null},{"dt":"2026-03-03","ratio":null},{"dt":"2026-03-04","ratio":null},{"dt":"2026-03-05","ratio":null},{"dt":"2026-03-06","ratio":null},{"dt":"2026-03-07","ratio":null},{"dt":"2026-03-08","ratio":null},{"dt":"2026-03-09","ratio":null},{"dt":"2026-03-10","ratio":null},{"dt":"2026-03-11","ratio":null},{"dt":"2026-03-12","ratio":null},{"dt":"2026-03-13","ratio":null},{"dt":"2026-03-14","ratio":null},{"dt":"2026-03-15","ratio":null},{"dt":"2026-03-16","ratio":null},{"dt":"2026-03-17","ratio":null},{"dt":"2026-03-18","ratio":null}],"qualityFieldLabel":"笔记质量分","engagementTrend":[]};
+    const publishChart = echarts.init(document.getElementById('chart-publish'));
+    publishChart.setOption({
+      title: { text: '每日发文与活跃创作者趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
       legend: { top: 30 },
       tooltip: { trigger: 'axis' },
       grid: { left: 48, right: 22, top: 66, bottom: 64 },
-      xAxis: { type: 'category', data: data.numericTop.map(x => x.field), axisLabel: { rotate: 28, color: '#334155' } },
+      xAxis: { type: 'category', data: data.publishTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
       yAxis: { type: 'value', axisLabel: { color: '#334155' } },
       series: [
         {
-          name: 'avg',
+          name: '发布笔记数',
           type: 'bar',
-          barMaxWidth: 24,
-          data: data.numericTop.map(x => x.avg),
-          itemStyle: { color: '#10b981', borderRadius: [8, 8, 0, 0] }
+          barMaxWidth: 22,
+          data: data.publishTrend.map(x => x.published),
+          itemStyle: { color: '#0ea5e9', borderRadius: [8, 8, 0, 0] }
         },
         {
-          name: 'p95',
+          name: '活跃创作者数',
           type: 'line',
           smooth: true,
-          data: data.numericTop.map(x => x.p95),
-          lineStyle: { width: 2.5, color: '#f59e0b' },
-          symbolSize: 7
-        },
-        {
-          name: 'max',
-          type: 'line',
-          smooth: true,
-          data: data.numericTop.map(x => x.max),
-          lineStyle: { width: 2.5, color: '#dc2626' },
+          data: data.publishTrend.map(x => x.active),
+          lineStyle: { width: 2.5, color: '#14b8a6' },
           symbolSize: 7
         }
       ]
     });
+
+    const typeChart = echarts.init(document.getElementById('chart-type'));
+    typeChart.setOption({
+      title: { text: '内容类型结构（日趋势）', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+      legend: { top: 30 },
+      tooltip: { trigger: 'axis' },
+      grid: { left: 48, right: 22, top: 66, bottom: 64 },
+      xAxis: { type: 'category', data: data.typeTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+      yAxis: { type: 'value', axisLabel: { color: '#334155' } },
+      series: [
+        {
+          name: '文字笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.text),
+          itemStyle: { color: '#22c55e' }
+        },
+        {
+          name: '图文笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.image),
+          itemStyle: { color: '#3b82f6' }
+        },
+        {
+          name: '视频笔记',
+          type: 'bar',
+          stack: 'notes_type',
+          data: data.typeTrend.map(x => x.video),
+          itemStyle: { color: '#f97316' }
+        }
+      ]
+    });
+
+    const qualityChart = echarts.init(document.getElementById('chart-quality'));
+    if (data.qualityTrend.some(x => x.score != null) || data.highQualityTrend.some(x => x.ratio != null)) {
+      qualityChart.setOption({
+        title: { text: (data.qualityFieldLabel || '笔记质量分') + '（100分制）趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 46, top: 66, bottom: 64 },
+        xAxis: {
+          type: 'category',
+          data: data.qualityTrend.map(x => x.dt),
+          axisLabel: { rotate: 28, color: '#334155' }
+        },
+        yAxis: [
+          { type: 'value', min: 0, max: 100, axisLabel: { color: '#334155' } },
+          { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%', color: '#334155' } }
+        ],
+        series: [
+          {
+            name: '质量分',
+            type: 'line',
+            smooth: true,
+            data: data.qualityTrend.map(x => x.score),
+            lineStyle: { width: 3, color: '#16a34a' },
+            areaStyle: { color: 'rgba(34, 197, 94, 0.15)' },
+            symbolSize: 6
+          },
+          {
+            name: '高质量占比',
+            type: 'line',
+            yAxisIndex: 1,
+            smooth: true,
+            data: data.highQualityTrend.map(x => x.ratio),
+            lineStyle: { width: 2.5, color: '#0f766e' },
+            symbolSize: 6
+          }
+        ]
+      });
+    } else {
+      qualityChart.setOption({
+        title: { text: '笔记质量分与高质量占比趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用质量分数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
+
+    const engagementChart = echarts.init(document.getElementById('chart-engagement'));
+    if (data.engagementTrend.length > 0) {
+      engagementChart.setOption({
+        title: { text: '每日阅读、互动与互动率趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        legend: { top: 30 },
+        tooltip: { trigger: 'axis' },
+        grid: { left: 48, right: 52, top: 66, bottom: 64 },
+        xAxis: { type: 'category', data: data.engagementTrend.map(x => x.dt), axisLabel: { rotate: 28, color: '#334155' } },
+        yAxis: [
+          { type: 'value', axisLabel: { color: '#334155' } },
+          { type: 'value', axisLabel: { formatter: '{value}%', color: '#334155' } }
+        ],
+        series: [
+          {
+            name: '阅读量',
+            type: 'bar',
+            barMaxWidth: 22,
+            data: data.engagementTrend.map(x => x.readings),
+            itemStyle: { color: '#0ea5e9', borderRadius: [8, 8, 0, 0] }
+          },
+          {
+            name: '互动量',
+            type: 'line',
+            smooth: true,
+            data: data.engagementTrend.map(x => x.interactions),
+            lineStyle: { width: 2.5, color: '#f97316' },
+            symbolSize: 7
+          },
+          {
+            name: '互动率',
+            type: 'line',
+            yAxisIndex: 1,
+            smooth: true,
+            data: data.engagementTrend.map(x => x.interactionRatePct),
+            lineStyle: { width: 2.5, color: '#7c3aed' },
+            symbolSize: 7
+          }
+        ]
+      });
+    } else {
+      engagementChart.setOption({
+        title: { text: '每日阅读、互动与互动率趋势', left: 'center', textStyle: { fontWeight: 700, color: '#1e293b' } },
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: { text: '暂无可用互动/阅读数据', fill: '#64748b', fontSize: 14 }
+        }
+      });
+    }
 
     document.querySelectorAll('.reveal').forEach((el, idx) => {
       setTimeout(() => el.classList.add('in'), 80 + idx * 90);
     });
 
     window.addEventListener('resize', () => {
-      nullChart.resize();
-      topicChart.resize();
-      numericChart.resize();
+      publishChart.resize();
+      typeChart.resize();
+      qualityChart.resize();
+      engagementChart.resize();
     });
   </script>
 </body>
