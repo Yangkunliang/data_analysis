@@ -623,11 +623,34 @@
     .creator-card {
       border: 1px solid rgba(0, 242, 255, 0.28);
       border-radius: 12px;
-      padding: 10px;
+      padding: 11px;
       background: rgba(8, 22, 40, 0.78);
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 242, 255, 0.05);
     }
     .creator-head { display: flex; justify-content: space-between; align-items: center; }
+    .creator-identity { margin-top: 8px; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .creator-avatar-shell {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: 2px solid rgba(0, 242, 255, 0.44);
+      background: radial-gradient(circle at 30% 22%, rgba(255, 0, 255, 0.3), rgba(0, 242, 255, 0.16) 55%, rgba(7, 18, 34, 0.88) 100%);
+      box-shadow: 0 0 16px rgba(0, 242, 255, 0.28), inset 0 0 14px rgba(255, 0, 255, 0.18);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex: none;
+    }
+    .creator-avatar { width: 100%; height: 100%; object-fit: cover; }
+    .creator-avatar-fallback {
+      color: #dff9ff;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(0, 242, 255, 0.35);
+    }
+    .creator-name-wrap { min-width: 0; }
     .creator-rank {
       display: inline-flex;
       align-items: center;
@@ -642,8 +665,15 @@
       border: 1px solid rgba(0, 242, 255, 0.45);
       box-shadow: 0 0 12px rgba(0, 242, 255, 0.28);
     }
-    .creator-id { margin-top: 7px; font-size: 14px; font-weight: 700; color: #f1fbff; }
-    .creator-sub { margin-top: 3px; font-size: 12px; color: #9ab9d2; }
+    .creator-id {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f1fbff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .creator-sub { margin-top: 2px; font-size: 12px; color: #9ab9d2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .creator-metrics { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 6px; }
     .creator-metrics span {
       display: inline-flex;
@@ -866,7 +896,7 @@
       </div>
       <details class="meta-quiet">
         <summary>任务与数据源信息（次要）</summary>
-        <div class="meta-quiet-content"><span>任务ID：da38eeef-9f43-4b0e-a504-8d1cc5b62179</span><span>JobID：notes_core_kpi_daily</span><span>时间范围：近31天（含当日）</span><span>数据来源：DMS DataService</span><span>生成时间：2026-03-19 16:35:05</span></div>
+        <div class="meta-quiet-content"><span>任务ID：eb3f1b5c-a540-4866-aac7-04559fb691f5</span><span>JobID：notes_core_kpi_daily</span><span>时间范围：近31天（含当日）</span><span>数据来源：DMS DataService</span><span>生成时间：2026-03-19 16:47:50</span></div>
       </details>
     </section>
 
@@ -880,8 +910,13 @@
           <div class="creator-head">
             <span class="creator-rank">TOP1</span>
           </div>
-          <div class="creator-id">孙建军</div>
-          <div class="creator-sub">用户ID：9997512</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">孙</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">孙建军</div>
+              <div class="creator-sub">用户ID：9997512</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 12</span>
             <span>阅读 4</span>
@@ -892,8 +927,13 @@
           <div class="creator-head">
             <span class="creator-rank">TOP2</span>
           </div>
-          <div class="creator-id">欧美群</div>
-          <div class="creator-sub">用户ID：9433385</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">欧</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">欧美群</div>
+              <div class="creator-sub">用户ID：9433385</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 19</span>
             <span>阅读 24</span>
@@ -904,8 +944,13 @@
           <div class="creator-head">
             <span class="creator-rank">TOP3</span>
           </div>
-          <div class="creator-id">陈晓红</div>
-          <div class="creator-sub">用户ID：1529760</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">陈</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">陈晓红</div>
+              <div class="creator-sub">用户ID：1529760</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 38</span>
             <span>阅读 64</span>
@@ -916,8 +961,13 @@
           <div class="creator-head">
             <span class="creator-rank">第4位</span>
           </div>
-          <div class="creator-id">白白</div>
-          <div class="creator-sub">用户ID：8956372</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">白</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">白白</div>
+              <div class="creator-sub">用户ID：8956372</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 27</span>
             <span>阅读 61</span>
@@ -928,8 +978,13 @@
           <div class="creator-head">
             <span class="creator-rank">第5位</span>
           </div>
-          <div class="creator-id">彭春燕</div>
-          <div class="creator-sub">用户ID：9981939</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">彭</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">彭春燕</div>
+              <div class="creator-sub">用户ID：9981939</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 14</span>
             <span>阅读 32</span>
@@ -940,8 +995,13 @@
           <div class="creator-head">
             <span class="creator-rank">第6位</span>
           </div>
-          <div class="creator-id">顾雪丽</div>
-          <div class="creator-sub">用户ID：7067954</div>
+          <div class="creator-identity">
+            <div class="creator-avatar-shell"><span class="creator-avatar-fallback">顾</span></div>
+            <div class="creator-name-wrap">
+              <div class="creator-id">顾雪丽</div>
+              <div class="creator-sub">用户ID：7067954</div>
+            </div>
+          </div>
           <div class="creator-metrics">
             <span>互动 58</span>
             <span>阅读 343</span>
