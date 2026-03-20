@@ -99,6 +99,31 @@
       72% { transform: translateX(-1px); text-shadow: -1px 0 rgba(255, 77, 109, 0.52), 1px 0 rgba(0, 242, 255, 0.34), 0 0 14px rgba(255, 77, 109, 0.5); }
       73% { transform: translateX(1px); }
     }
+    @keyframes hazardSweep {
+      0% { background-position: 0 0, -120% 0; opacity: .36; }
+      100% { background-position: 0 52px, 220% 0; opacity: .55; }
+    }
+    @keyframes criticalFlash {
+      0%, 100% { box-shadow: 0 0 16px rgba(255, 36, 76, 0.32), inset 0 0 0 1px rgba(255, 77, 109, 0.28); }
+      50% { box-shadow: 0 0 32px rgba(255, 36, 76, 0.5), inset 0 0 0 1px rgba(255, 77, 109, 0.48); }
+    }
+    @keyframes hudBlink {
+      0%, 40%, 100% { opacity: .5; filter: saturate(1); }
+      43%, 58% { opacity: 1; filter: saturate(1.2) brightness(1.2); }
+    }
+    @keyframes sparkBurst {
+      0%, 100% { opacity: .3; transform: scale(.8); }
+      30% { opacity: .92; transform: scale(1.2); }
+      60% { opacity: .55; transform: scale(.95); }
+    }
+    @keyframes hpStripeFlow {
+      from { background-position: 0 0; }
+      to { background-position: 30px 0; }
+    }
+    @keyframes hpPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.14); }
+    }
     @keyframes scoreValueSoft {
       0%, 100% { filter: brightness(1); text-shadow: 0 0 12px rgba(0, 242, 255, 0.26); }
       50% { filter: brightness(1.03); text-shadow: 0 0 16px rgba(0, 242, 255, 0.34); }
@@ -365,22 +390,30 @@
       z-index: 1;
     }
     .score.score-risk {
-      box-shadow: 0 0 13px rgba(255, 77, 109, 0.3);
+      box-shadow: 0 0 16px rgba(255, 36, 76, 0.34), inset 0 0 0 1px rgba(255, 77, 109, 0.22);
       border-color: rgba(255, 77, 109, 0.5);
-      background: radial-gradient(circle at 50% 28%, rgba(255, 77, 109, 0.28), rgba(9, 22, 38, 0.9) 62%);
-      animation: riskPulse 3.8s ease-in-out infinite;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255, 77, 109, 0.3), rgba(9, 22, 38, 0.9) 62%),
+        linear-gradient(135deg, rgba(46, 8, 19, 0.34), rgba(14, 10, 20, 0.12));
+      animation: riskPulse 2.6s ease-in-out infinite, criticalFlash 1.25s steps(2, end) infinite;
       overflow: hidden;
+    }
+    .score.score-risk::before {
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 77, 109, 0.24) 28%, rgba(255, 196, 0, 0.36) 50%, rgba(255, 77, 109, 0.24) 72%, transparent 100%);
+      background-size: 220% 100%;
+      animation: neonSweep 3.4s linear infinite;
+      opacity: 0.6;
     }
     .score.score-risk::after {
       content: "";
       position: absolute;
       inset: -8% 0;
       background:
-        repeating-linear-gradient(180deg, rgba(255, 77, 109, 0.18) 0 2px, transparent 2px 5px),
-        linear-gradient(180deg, transparent 0%, rgba(255, 77, 109, 0.08) 50%, transparent 100%);
+        repeating-linear-gradient(-27deg, rgba(255, 77, 109, 0.2) 0 9px, rgba(255, 145, 0, 0.08) 9px 16px),
+        linear-gradient(90deg, transparent 0%, rgba(255, 77, 109, 0.28) 50%, transparent 100%);
       pointer-events: none;
       mix-blend-mode: screen;
-      animation: intrusionScan 3.1s linear infinite;
+      animation: hazardSweep 1.8s linear infinite, intrusionScan 2.2s linear infinite;
       z-index: 0;
     }
     .score.score-watch {
@@ -408,6 +441,27 @@
     .score.score-risk .v {
       color: #ffd5dd;
       animation: scoreValueSoft 4.2s ease-in-out infinite, scoreGlitch 2.3s steps(2, end) infinite;
+      position: relative;
+      isolation: isolate;
+    }
+    .score.score-risk .v::before,
+    .score.score-risk .v::after {
+      content: attr(data-score);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: .7;
+    }
+    .score.score-risk .v::before {
+      color: rgba(255, 77, 109, 0.75);
+      transform: translateX(-1px);
+    }
+    .score.score-risk .v::after {
+      color: rgba(0, 242, 255, 0.65);
+      transform: translateX(1px);
     }
     .score.score-risk .score-ring.ring-2 {
       border-color: rgba(255, 77, 109, 0.42);
@@ -425,14 +479,14 @@
     .risk-intrusion-banner {
       margin: 0 auto 6px;
       max-width: 240px;
-      border: 1px dashed rgba(255, 77, 109, 0.62);
+      border: 1px dashed rgba(255, 77, 109, 0.74);
       border-radius: 8px;
       background: linear-gradient(90deg, rgba(61, 8, 18, 0.76), rgba(30, 10, 31, 0.72));
       padding: 4px 8px;
       line-height: 1.2;
-      box-shadow: inset 0 0 0 1px rgba(255, 77, 109, 0.16), 0 0 12px rgba(255, 77, 109, 0.28);
+      box-shadow: inset 0 0 0 1px rgba(255, 77, 109, 0.22), 0 0 16px rgba(255, 77, 109, 0.34);
       position: relative;
-      z-index: 2;
+      z-index: 3;
     }
     .risk-intrusion-banner::before {
       content: "⚠";
@@ -447,10 +501,10 @@
       display: block;
       margin-left: 12px;
       color: #ffe2e8;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      letter-spacing: .09em;
-      animation: alarmBlink 1.4s steps(2, end) infinite;
+      letter-spacing: .11em;
+      animation: alarmBlink 1.1s steps(2, end) infinite;
     }
     .risk-intrusion-banner .sub {
       display: block;
@@ -460,6 +514,50 @@
       font-size: 10px;
       letter-spacing: .04em;
     }
+    .risk-hud {
+      position: absolute;
+      inset: 6px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .risk-hud span {
+      position: absolute;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      color: rgba(255, 205, 214, 0.8);
+      border: 1px solid rgba(255, 77, 109, 0.45);
+      background: rgba(46, 8, 17, 0.48);
+      padding: 1px 5px;
+      border-radius: 999px;
+      animation: hudBlink 1.6s steps(2, end) infinite;
+      text-shadow: 0 0 8px rgba(255, 77, 109, 0.45);
+    }
+    .risk-hud .tl { top: 2px; left: 2px; }
+    .risk-hud .tr { top: 2px; right: 2px; animation-delay: .24s; }
+    .risk-hud .bl { bottom: 2px; left: 2px; animation-delay: .48s; }
+    .risk-hud .br { bottom: 2px; right: 2px; animation-delay: .72s; }
+    .risk-sparks {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .risk-sparks span {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 232, 128, 0.95) 0%, rgba(255, 77, 109, 0.9) 58%, rgba(255, 77, 109, 0) 100%);
+      box-shadow: 0 0 12px rgba(255, 77, 109, 0.5);
+      animation: sparkBurst 1.8s ease-in-out infinite;
+    }
+    .risk-sparks .sp1 { top: 28px; left: 22%; animation-delay: .08s; }
+    .risk-sparks .sp2 { top: 46px; right: 20%; animation-delay: .33s; }
+    .risk-sparks .sp3 { top: 102px; left: 18%; animation-delay: .59s; }
+    .risk-sparks .sp4 { top: 120px; right: 17%; animation-delay: .84s; }
+    .risk-sparks .sp5 { bottom: 42px; left: 30%; animation-delay: .22s; }
+    .risk-sparks .sp6 { bottom: 36px; right: 28%; animation-delay: .67s; }
     .score .tag {
       margin: 0;
       font-size: 10px;
@@ -505,6 +603,10 @@
       .score-core,
       .score.score-risk::after,
       .risk-intrusion-banner .main,
+      .risk-hud span,
+      .risk-sparks span,
+      .vs-hp > span,
+      .vs-hp > span::after,
       .metric-wave path,
       .score .alert::before {
         animation: none !important;
@@ -845,7 +947,7 @@
     }
     .duel-board {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) clamp(168px, 19vw, 230px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 320px) minmax(0, 1fr);
       gap: 12px;
       margin-bottom: 12px;
       align-items: stretch;
@@ -859,8 +961,16 @@
     }
     .duel-team.winner { border-color: rgba(57, 255, 20, 0.52); box-shadow: 0 0 18px rgba(57, 255, 20, 0.18), inset 0 0 0 1px rgba(57, 255, 20, 0.12); }
     .duel-team.challenger { border-color: rgba(255, 77, 109, 0.44); box-shadow: 0 0 16px rgba(255, 77, 109, 0.15), inset 0 0 0 1px rgba(255, 77, 109, 0.08); }
-    .duel-headline { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .duel-team h3 { margin: 0; font-size: 16px; color: #e6f8ff; }
+    .duel-headline { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .duel-team h3 {
+      margin: 0;
+      font-size: clamp(28px, 2.6vw, 40px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .03em;
+      color: #e6f8ff;
+      text-shadow: 0 0 18px rgba(0, 242, 255, 0.28);
+    }
     .duel-badge {
       border: 1px solid rgba(0, 242, 255, 0.45);
       background: rgba(0, 242, 255, 0.14);
@@ -898,39 +1008,52 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 8px 10px;
+      gap: 4px;
+      padding: 10px 12px;
       min-width: 0;
+      min-height: 138px;
       color: #ffd9ff;
       font-weight: 800;
       letter-spacing: .08em;
       text-align: center;
       text-transform: uppercase;
     }
-    .vs-word { font-size: 16px; letter-spacing: .16em; color: #ffd9ff; text-shadow: 0 0 10px rgba(255, 0, 255, 0.4); }
+    .vs-word {
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: .2em;
+      color: #ffd9ff;
+      text-shadow: 0 0 12px rgba(255, 0, 255, 0.45);
+      margin-bottom: 2px;
+    }
     .vs-score {
       color: #e8fbff;
-      font-size: 32px;
+      font-size: 56px;
       font-weight: 800;
-      letter-spacing: .03em;
+      letter-spacing: .02em;
       line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      text-shadow: 0 0 16px rgba(0, 242, 255, 0.32);
+      gap: 6px;
+      text-shadow: 0 0 22px rgba(0, 242, 255, 0.42);
     }
-    .vs-score small {
-      font-size: 23px;
-      margin: 0;
-      color: #f2f8ff;
+    .vs-score .n {
+      min-width: .72em;
+      text-align: center;
+      font-feature-settings: "tnum" 1;
+      line-height: 1;
+    }
+    .vs-score .sep {
+      font-size: 40px;
+      color: #fff3ff;
       line-height: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       transform: translateY(-1px);
-      text-shadow: none;
-      font-weight: 700;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+      font-weight: 900;
     }
     .duel-vs small {
       letter-spacing: 0;
@@ -941,6 +1064,67 @@
       padding: 0 6px;
       line-height: 1.35;
     }
+    .vs-blood {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 4px 0 0;
+    }
+    .vs-hp {
+      height: 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(223, 247, 255, 0.25);
+      background: rgba(6, 16, 30, 0.72);
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+    .vs-hp > span {
+      --hp: 0%;
+      display: block;
+      height: 100%;
+      width: var(--hp);
+      max-width: 100%;
+      min-width: 0;
+      border-radius: inherit;
+      transition: width .5s ease;
+      position: relative;
+    }
+    .vs-hp > span::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.22) 0 6px, rgba(255, 255, 255, 0.02) 6px 12px);
+      animation: hpStripeFlow 1s linear infinite;
+      mix-blend-mode: screen;
+    }
+    .vs-hp.left > span {
+      background: linear-gradient(90deg, rgba(0, 163, 255, 0.95), rgba(0, 242, 255, 0.95));
+      box-shadow: 0 0 12px rgba(0, 242, 255, 0.45);
+      animation: hpPulse 1.8s ease-in-out infinite;
+    }
+    .vs-hp.right > span {
+      margin-left: auto;
+      background: linear-gradient(90deg, rgba(255, 162, 0, 0.95), rgba(255, 77, 109, 0.95));
+      box-shadow: 0 0 12px rgba(255, 77, 109, 0.45);
+      animation: hpPulse 1.8s ease-in-out infinite;
+      animation-delay: .32s;
+    }
+    .vs-blood-label {
+      width: 100%;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 10px;
+      color: #d5f6ff;
+      letter-spacing: .04em;
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.22);
+    }
+    .vs-blood-label span:first-child { color: #9fefff; }
+    .vs-blood-label span:last-child { color: #ffcfda; }
     .duel-empty {
       grid-column: 1 / -1;
       border: 1px dashed rgba(0, 242, 255, 0.32);
@@ -1607,10 +1791,12 @@
       .creator-grid { grid-template-columns: 1fr; }
       .chart-insight-grid { grid-template-columns: 1fr; }
       .ops-grid { grid-template-columns: 1fr; }
-      .duel-team h3 { font-size: 15px; }
+      .duel-team h3 { font-size: 28px; }
       .duel-score { font-size: 26px; }
       .battle-ticker-track span { font-size: 11px; }
-      .vs-score { font-size: 28px; }
+      .vs-word { font-size: 18px; }
+      .vs-score { font-size: 44px; }
+      .vs-score .sep { font-size: 30px; }
       .podium-score { font-size: 22px; }
     }
   </style>
@@ -1634,13 +1820,27 @@
           <span class="main">INTRUSION ALERT</span>
           <span class="sub">运营质量风险预警 · 需立即处置</span>
         </div>
+            <div class="risk-hud" aria-hidden="true">
+          <span class="tl">CRITICAL</span>
+          <span class="tr">LEVEL RED</span>
+          <span class="bl">SYSTEM BREACH</span>
+          <span class="br">LOCKDOWN</span>
+        </div>
+        <div class="risk-sparks" aria-hidden="true">
+          <span class="sp1"></span>
+          <span class="sp2"></span>
+          <span class="sp3"></span>
+          <span class="sp4"></span>
+          <span class="sp5"></span>
+          <span class="sp6"></span>
+        </div>
             <div class="score-orbit">
               <span class="score-ring ring-1"></span>
               <span class="score-ring ring-2"></span>
               <span class="score-ring ring-3"></span>
               <div class="score-core">
                 <p class="l"><span class="help-wrap help-down-left"><span>运营健康分</span><button type="button" class="help-btn" title="组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。" aria-label="运营健康分口径说明：组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。">?</button><span class="help-pop">组合评分：最新质量分45% + 最新高质量占比25% + 最新互动率20% + 近7天质量/互动趋势10%。范围0-100。</span></span></p>
-                <p class="v">44</p>
+                <p class="v" data-score="44">44</p>
                 <p class="tag">预警</p>
               </div>
             </div>
@@ -1775,7 +1975,15 @@
         </article>
         <div class="duel-vs">
           <span class="vs-word">VS</span>
-          <div class="vs-score">1<small>:</small>2</div>
+          <div class="vs-score"><span class="n">1</span><span class="sep">:</span><span class="n">2</span></div>
+          <div class="vs-blood">
+            <div class="vs-hp left"><span style="--hp:33%"></span></div>
+            <div class="vs-hp right"><span style="--hp:67%"></span></div>
+          </div>
+          <div class="vs-blood-label">
+            <span>东中 33%</span>
+            <span>67% 北南</span>
+          </div>
           <small>当前领先：北南，差值 291</small>
         </div>
         <article class="duel-team winner">
