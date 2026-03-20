@@ -430,6 +430,13 @@
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
     }
+    .metric-note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #8fb4cf;
+      line-height: 1.45;
+    }
+    .metric-note strong { color: #d8f2ff; font-weight: 700; }
     .metric {
       padding: 10px 11px 8px;
       border: 1px solid rgba(0, 242, 255, 0.24);
@@ -947,7 +954,7 @@
               <div class="desc">发文 77 篇｜阅读环比 <span class="trend-inline down"><span class="arrow">▼</span>-21.3%</span></div>
             </article>
             <article class="signal-mini">
-              <div class="label"><span class="help-wrap help-down-left"><span>最新日质量表现</span><button type="button" class="help-btn" title="日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。" aria-label="最新日质量表现口径说明：日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。">?</button><span class="help-pop">日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。</span></span></div>
+              <div class="label"><span class="help-wrap help-down-left"><span>最新日质量表现</span><button type="button" class="help-btn" title="日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。" aria-label="最新日质量表现口径说明：日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。">?</button><span class="help-pop">日期=2026-03-19。主值=最新日质量分；副文=最新日高质占比与31天均值差异。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。</span></span></div>
               <div class="value" style="color: var(--signal-green)">61.60</div>
               <div class="desc">高质占比 10.39%｜较31天均值 质量 <span class="trend-inline up"><span class="arrow">▲</span>+0.15分</span> 高质 <span class="trend-inline up"><span class="arrow">▲</span>+2.64pp</span></div>
             </article>
@@ -1012,7 +1019,7 @@
         <div class="metric-top">
           <div class="metric-head-left">
             <span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.5 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17l-5.6 2.8 1.1-6.2L3 9.2l6.2-.9L12 2.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
-            <div class="label"><span class="help-wrap help-down-left"><span>最新日质量分</span><button type="button" class="help-btn" title="最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。" aria-label="最新日质量分口径说明：最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。">?</button><span class="help-pop">最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。</span></span></div>
+            <div class="label"><span class="help-wrap help-down-left"><span>最新日质量分</span><button type="button" class="help-btn" title="最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。" aria-label="最新日质量分口径说明：最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。">?</button><span class="help-pop">最新日期=2026-03-19。该日平均笔记分（100分制），来源 notes.score 均值。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。</span></span></div>
           </div>
           <span class="metric-trend up">7D +1.7%</span>
         </div>
@@ -1023,7 +1030,7 @@
         <div class="metric-top">
           <div class="metric-head-left">
             <span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.5 8.5 4.8V17L12 21.5 3.5 17V7.3L12 2.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m8.4 12.3 2.2 2.3 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <div class="label"><span class="help-wrap help-down-left"><span>最新日高质占比</span><button type="button" class="help-btn" title="最新日期=2026-03-19。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。" aria-label="最新日高质占比口径说明：最新日期=2026-03-19。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。">?</button><span class="help-pop">最新日期=2026-03-19。该日中 score&gt;=80 的笔记数 / 当日发布笔记数。</span></span></div>
+            <div class="label"><span class="help-wrap help-down-left"><span>最新日高质占比</span><button type="button" class="help-btn" title="最新日期=2026-03-19。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。" aria-label="最新日高质占比口径说明：最新日期=2026-03-19。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。">?</button><span class="help-pop">最新日期=2026-03-19。高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。</span></span></div>
           </div>
           <span class="metric-trend up">7D +59.4%</span>
         </div>
@@ -1043,6 +1050,7 @@
         <div class="metric-wave"><svg viewBox="0 0 100 20" aria-hidden="true"><path d="M2 16 C 17 14, 31 8, 47 10 C 63 12, 78 7, 98 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
       </article>
       </div>
+      <div class="metric-note"><strong>口径说明：</strong>高质量口径：当日 score&gt;=80 的笔记数 / 当日发布笔记数。质量分与高质量占比均来自 AI 质量评分结果，仅供运营参考。</div>
       <details class="meta-quiet">
         <summary>任务与数据源信息（次要）</summary>
         <div class="meta-quiet-content"><span>任务ID：05424935-1588-4b57-9293-cb10242d149a</span><span>JobID：notes_core_kpi_daily</span><span>时间范围：近31天（含当日）</span><span>数据来源：DMS DataService</span><span>生成时间：2026-03-19 23:19:26</span></div>
